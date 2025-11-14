@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< HEAD
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eecd2e98-c87f-4bfc-b2f4-1d24d3d50395" name="Changes" comment="">
+=======
+  <component name="ChangeListManager">
+    <list default="true" id="7795498d-d0cd-4edd-9bd2-82c6d778cf90" name="Changes" comment="">
+>>>>>>> 1300892e314b661aca1154d5b7fe60d9849a1a54
       <change afterPath="$PROJECT_DIR$/.idea/LanguageAcademyManager.iml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
@@ -17,6 +22,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -24,13 +30,19 @@
       </list>
     </option>
   </component>
+=======
+>>>>>>> 1300892e314b661aca1154d5b7fe60d9849a1a54
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 3
 }]]></component>
+<<<<<<< HEAD
   <component name="ProjectId" id="35TKaEQjll9bj9Ds2TqAV3CUA9F" />
+=======
+  <component name="ProjectId" id="35HiG1tKVM7HhBhL2401lASEXli" />
+>>>>>>> 1300892e314b661aca1154d5b7fe60d9849a1a54
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -41,10 +53,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+<<<<<<< HEAD
     "Python.__init__.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+=======
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+>>>>>>> 1300892e314b661aca1154d5b7fe60d9849a1a54
     "git-widget-placeholder": "master"
   }
 }]]></component>
@@ -57,11 +73,19 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+<<<<<<< HEAD
       <changelist id="eecd2e98-c87f-4bfc-b2f4-1d24d3d50395" name="Changes" comment="" />
       <created>1763128682886</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1763128682886</updated>
+=======
+      <changelist id="7795498d-d0cd-4edd-9bd2-82c6d778cf90" name="Changes" comment="" />
+      <created>1762773299163</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762773299163</updated>
+>>>>>>> 1300892e314b661aca1154d5b7fe60d9849a1a54
     </task>
     <servers />
   </component>
