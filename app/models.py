@@ -1,85 +1,78 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Boolean
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from enum import Enum as RoleEnum
 from app import db, app
-from datetime import datetime, timezone
-
-
-class UserRole(RoleEnum):
-    ADMIN = 1
-    STUDENT = 2
-    TEACHER = 3
-    CASHIER = 4
+from datetime import datetime
 
 
 class Base(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False)
+
     def __str__(self):
         return self.name
 
-class Fee(Base):
-    fee = Column(Integer)
-    course = relationship('Course', backref="Fee", lazy=True)
 
-class Score(Base):
-    score = Column(Float)
-    enrollment = relationship('Enrollment', backref="Score", lazy=True)
-
-
-class User(Base):
-    # __abstract__ = True
-    account = relationship('Account', backref="User", lazy=True)
-    email = Column(String(255), nullable=False)
-
-
-class Account(UserMixin, Base):
-    username = Column(String(50), unique=True, nullable=False)
+class User(Base, UserMixin):
+    username = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
-    role = Column(Enum(UserRole), default=UserRole.STUDENT)
+    avatar = Column(String(300), default="")
+    status = Column(Boolean, default=True)
+
+    enrollment = relationship('enrollment', backref="user", lazy=True)
+    user_role = relationship('userRole', backref='user', lazy=True)
+    bill = relationship('bill', backref='user', lazy=True)
+
+
+class Role(Base):
+    user_role = relationship('userRole', backref='role', lazy=True)
+
+
+class UserRole(Base):
     user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
 
 
 class Language(Base):
-    course = relationship('Course', backref="Language", lazy=True)
+    course = relationship('course', backref='language', lazy=True)
 
 
-class Student(User):
-    enrollment = relationship('Enrollment', backref="Student", lazy=True)
+class StudyRoute(Base):
+    course_in_route = relationship('courseInRoute', backref='studyRoute', lazy=True)
 
 
 class Course(Base):
     lang_id = Column(Integer, ForeignKey(Language.id), nullable=False)
-    enrollment = relationship('Enrollment', backref="Course", lazy=True)
-    fee = Column(Integer, ForeignKey(Fee.id), nullable=False)
+
+    enrollment = relationship('enrollment', backref='course', lazy=True)
+    course_in_route = relationship('courseInRoute', backref='course', lazy=True)
+
+
+class CourseInRoute(Base):
+    id_route = Column(Integer, ForeignKey(StudyRoute.id), nullable=False)
+    id_course = Column(Integer, ForeignKey(Course.id), nullable=False)
 
 
 class Enrollment(Base):
-    student_id = Column(Integer, ForeignKey(Student.id), primary_key=True)
-    course_id = Column(Integer, ForeignKey(Course.id), primary_key=True)
-    date = Column(DateTime, default=datetime.now(timezone.utc))
-    score_id = Column(Integer, ForeignKey(Score.id), nullable=False)
+    id_user = Column(Integer, ForeignKey(User.id), nullable=False)
+    id_course = Column(Integer, ForeignKey(Course.id), nullable=False)
+    day_assignment = Column(DateTime, default=datetime.now())
+    score = relationship('score', backref='enrollment', lazy=True)
 
 
-class Teacher(User):
-    myClass = relationship('MyClass', backref="Teacher", lazy=True)
-
-
-class Cashier(User):
-    bill = relationship('Bill', backref="Cashier", lazy=True)
+class Score(Base):
+    score = Column(Float, default=0.0)
+    rate = Column(Float, default=0.0)
+    enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
 
 
 class Bill(Base):
-    cashier_id = Column(Integer, ForeignKey(Cashier.id), nullable=False)
+    id_cashier = Column(Integer, ForeignKey(User.id), nullable=False)
 
 
-class MyClass(Base):
-    teacher_id = Column(Integer, ForeignKey(Teacher.id), nullable=False)
-
-
-if __name__=="__main__":
+if __name__ == "__main__":
     with app.app_context():
         db.create_all()
         db.session.commit()
