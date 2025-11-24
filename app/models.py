@@ -44,6 +44,7 @@ class StudyRoute(Base):
 
 
 class Course(Base):
+    fee = Column(Float, default=0.0)
     lang_id = Column(Integer, ForeignKey(Language.id), nullable=False)
 
     enrollment = relationship('enrollment', backref='course', lazy=True)
