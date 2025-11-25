@@ -1,42 +1,35 @@
-from app.models import Course
-
-
-def load_score():
-    # return Score.query.filter(Enrollment.score_id.__eq__(int(id)))
-    pass
-
-
-def load_fee():
-    pass
+from app import app
+from app.models import Course, Language, StudyRoute, User
 
 
 def load_language():
-    pass
+    return Language.query.all()
 
 
-def load_student():
-    pass
+def load_route():
+    return StudyRoute.query.all()
 
 
-def load_teacher():
-    pass
+def load_course(q=None, lang_id=None, route_id=None, page=None):
+    query = Course.query
+
+    if q:
+        query = query.filter(Course.name.contains(q))
+    if lang_id:
+        query = query.filter(Course.id.__eq__(lang_id))
+    if route_id:
+        query = query.filter(Course.course_in_route.__eq__(route_id))
+    if page:
+        size = app.config['PAGE_SIZE']
+        start = (int(page) - 1) * size
+        query = query.slice(start, (start + size))
+
+    return query.all()
 
 
-def load_cashier():
-    pass
+def get_course_by_id(course_id):
+    return Course.query.get(course_id)
 
 
-def load_course():
-    pass
-
-
-def load_enrollment():
-    pass
-
-
-def load_bill():
-    pass
-
-
-def load_myclass():
-    pass
+def load_user_by_id(user_id):
+    return User.query.get(user_id)
