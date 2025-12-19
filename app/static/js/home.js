@@ -118,3 +118,87 @@ const questionBank = {
         { q: "Wir ___ Freunde", o: ["bin", "ist", "sind"], a: 2 }
     ]
 };
+
+
+const minRange = document.getElementById('priceMin');
+const maxRange = document.getElementById('priceMax');
+const bubbleMin = document.getElementById('bubbleMin');
+const bubbleMax = document.getElementById('bubbleMax');
+const track = document.querySelector('.price-track');
+
+/* Gắn bubble theo nút */
+function setBubble(range, bubble) {
+  const min = Number(range.min);
+  const max = Number(range.max);
+  const val = Number(range.value);
+
+  const percent = ((val - min) / (max - min)) * 100;
+  bubble.style.left = percent + '%';
+  bubble.textContent = val.toLocaleString('vi-VN') + 'đ';
+}
+
+/* Đồng bộ 2 range + track */
+function syncRanges() {
+  let minVal = Number(minRange.value);
+  let maxVal = Number(maxRange.value);
+
+  /* Không cho min vượt max */
+  if (minVal > maxVal) {
+    minRange.value = maxVal;
+    minVal = maxVal;
+  }
+
+  const minPercent = (minVal / minRange.max) * 100;
+  const maxPercent = (maxVal / maxRange.max) * 100;
+
+  /* Thanh xanh ở giữa */
+  track.style.left = minPercent + '%';
+  track.style.width = (maxPercent - minPercent) + '%';
+
+  /* Bubble */
+  setBubble(minRange, bubbleMin);
+  setBubble(maxRange, bubbleMax);
+}
+
+/* Event */
+minRange.addEventListener('input', syncRanges);
+maxRange.addEventListener('input', syncRanges);
+
+/* Init */
+syncRanges();document.addEventListener("DOMContentLoaded", () => {
+
+  const filterCheckboxes = document.querySelectorAll(
+    '.filter-language, .filter-level'
+  );
+
+  filterCheckboxes.forEach(cb => {
+    cb.addEventListener('change', applyFilterInstant);
+  });
+
+  function applyFilterInstant() {
+    const selectedLanguages = Array.from(
+      document.querySelectorAll('.filter-language:checked')
+    ).map(cb => cb.value);
+
+    const selectedLevels = Array.from(
+      document.querySelectorAll('.filter-level:checked')
+    ).map(cb => cb.value);
+
+    document.querySelectorAll('.course-item').forEach(card => {
+      const cardLang = card.dataset.language;
+      const cardLevel = card.dataset.level;
+
+      const matchLang =
+        selectedLanguages.length === 0 ||
+        selectedLanguages.includes(cardLang);
+
+      const matchLevel =
+        selectedLevels.length === 0 ||
+        selectedLevels.includes(cardLevel);
+
+      card.style.display =
+        (matchLang && matchLevel) ? '' : 'none';
+    });
+  }
+
+});
