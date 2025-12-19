@@ -125,6 +125,32 @@ def register_my_user():
 
     return render_template("register.html", err_msg=err_msg)
 
+@app.route("/notifications")
+@login_required
+def notifications_page():
+    notifications = [
+        {
+            "title": "Lịch học mới",
+            "content": "Lớp tiếng Anh giao tiếp bắt đầu tối nay.",
+            "time": "5 phút trước",
+            "is_read": False
+        },
+        {
+            "title": "Bài tập mới",
+            "content": "Giáo viên đã giao bài luyện Listening.",
+            "time": "1 giờ trước",
+            "is_read": True
+        },
+        {
+            "title": "Kết quả thi thử",
+            "content": "Bạn đã hoàn thành bài thi trình độ.",
+            "time": "Hôm nay",
+            "is_read": True
+        }
+    ]
+    return render_template("notifications.html", notifications=notifications)
+
+
 
 @app.route("/logout")
 def logout_my_user():
@@ -135,6 +161,48 @@ def logout_my_user():
 @login.user_loader
 def get_user(user_id):
     return dao.get_user_by_id(user_id)
+
+
+@app.route("/student")
+@login_required
+def student_page():
+    return render_template("student.html")
+
+
+@app.route("/student_courses")
+@login_required
+def student_courses():
+    return render_template("student_course.html")
+
+
+@app.route("/teacher/assignments")
+@login_required
+def teacher_assignments():
+    return render_template("teacher_assignments.html")
+
+
+@app.route("/teacher_attendance")
+@login_required
+def teacher_attendance():
+    return render_template("teacher_attendance.html")
+
+
+@app.route("/teacher_grade_entry")
+@login_required
+def teacher_grade_entry():
+    return render_template("teacher_grade_entry.html")
+
+
+@app.route("/statistics")
+@login_required
+def statistics_page():
+    return render_template("statistics.html")
+
+
+@app.route("/invoices")
+@login_required
+def invoices_page():
+    return render_template("invoices.html")
 
 
 if __name__ == "__main__":

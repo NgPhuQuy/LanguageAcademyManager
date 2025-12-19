@@ -1,7 +1,7 @@
 from flask import redirect
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.theme import Bootstrap4Theme
+
 from app import app, db, dao
 from app.models import User, Language, Course
 from flask_admin import BaseView
@@ -59,7 +59,11 @@ class MyCourseView(MyAuthenticatedView):
     }
 
 
-admin = Admin(app=app, name="Language Academy Manager", theme=Bootstrap4Theme(), index_view=MyAdminIndexView())
+admin = Admin(
+    app=app,
+    name="Language Academy Manager",
+    index_view=MyAdminIndexView()
+)
 
 
 admin.add_view(MyCourseView(Course, db.session))

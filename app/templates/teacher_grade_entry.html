@@ -1,0 +1,115 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="container my-5 page-content">
+
+    <!-- HEADER ACTION -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0 text-primary">
+            <i class="bi bi-person-circle me-2"></i>
+            Chào mừng,
+            <span class="fw-semibold text-secondary">Giáo viên</span>
+        </h2>
+
+        <div class="btn-group">
+            <button class="btn btn-outline-primary">
+                <i class="bi bi-cloud-arrow-down me-1"></i>
+                Lưu bảng điểm
+            </button>
+
+            <button class="btn btn-outline-secondary">
+                <i class="bi bi-folder2-open me-1"></i>
+                Bảng đã lưu
+            </button>
+
+            <button class="btn btn-outline-success">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i>
+                Xuất file
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTROL PANEL -->
+    <div class="card border-0 shadow rounded-4 mb-4"
+         style="background:#f8fafc">
+        <div class="card-body">
+            <div class="row g-3">
+
+                <!-- CHỌN LỚP -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-secondary">
+                        Chọn lớp
+                    </label>
+
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center"
+                                data-bs-toggle="dropdown">
+                            <span>
+                                <i class="bi bi-bookmark-fill me-2 text-primary"></i>
+                                <span id="selectedClassText">Chọn lớp...</span>
+                            </span>
+                            <i class="bi bi-chevron-down"></i>
+                        </button>
+
+                        <ul class="dropdown-menu w-100 shadow-sm border-0">
+                            <li><a class="dropdown-item">📘 Lớp A</a></li>
+                            <li><a class="dropdown-item">📗 Lớp B</a></li>
+                            <li><a class="dropdown-item">📙 Lớp C</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- NGÀY -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold text-secondary">
+                        Ngày
+                    </label>
+                    <input type="date" class="form-control" value="2025-11-28">
+                </div>
+
+                <!-- SEARCH -->
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold text-secondary">
+                        Tìm kiếm học viên
+                    </label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="🔎 Nhập tên học viên...">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead class="fw-semibold text-primary"
+                           style="background:#eef2ff">
+                        <tr>
+                            <th>STT</th>
+                            <th>Họ và Tên</th>
+                            <th>Chuyên cần</th>
+                            <th>Giữa kỳ</th>
+                            <th>Cuối kỳ</th>
+                            <th>Đạt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="text-muted py-4">
+                                Chưa có dữ liệu
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
