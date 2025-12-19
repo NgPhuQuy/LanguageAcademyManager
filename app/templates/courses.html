@@ -20,10 +20,18 @@
             <div class="d-flex align-items-center justify-content-center gap-2 search-filter-wrapper">
 
                 <!-- SEARCH -->
-                <input type="text" id="searchInput"
-                       class="form-control form-control-lg rounded-pill"
-                       style="max-width: 700px;"
-                       placeholder="🔍 Tìm kiếm khóa học...">
+                <div class="container">
+                    <form method="get" action="" class="d-flex justify-content-center w-100 gap-3">
+                        <input type="text" id="searchInput" name="q"
+                               class="form-control form-control-lg rounded-pill"
+                               style="max-width: 700px;"
+                               placeholder="🔍 Tìm kiếm khóa học...">
+                        <button type="submit"
+                                class="btn btn-primary btn-lg rounded-pill px-4">
+                            🔍 Tìm
+                        </button>
+                    </form>
+                </div>
 
                 <!-- FILTER -->
                 <div class="position-relative">
@@ -45,16 +53,16 @@
 
                             <div class="d-flex flex-wrap gap-3">
                                 {%for l in languages%}
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               id="lang_{{l.id}}"
-                                               name="language"
-                                               value="{{l.name}}">
-                                        <label class="form-check-label" for="lang_{{l.id}}">
-                                            {{l.name}}
-                                        </label>
-                                    </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-language"
+                                           type="checkbox"
+                                           id="lang_{{l.id}}"
+                                           name="language"
+                                           value="{{l.name}}">
+                                    <label class="form-check-label" for="lang_{{l.id}}">
+                                        {{l.name}}
+                                    </label>
+                                </div>
                                 {%endfor%}
                             </div>
                         </div>
@@ -65,46 +73,47 @@
 
                             <div class="d-flex flex-wrap gap-3">
                                 {%for level in levels%}
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               id="level_{{level.id}}"
-                                               name="level"
-                                               value="{{level.name}}">
-                                        <label class="form-check-label" for="level_{{level.id}}">
-                                            {{level.name}}
-                                        </label>
-                                    </div>
+                                <div class="form-check">
+                                    <input class="form-check-input filter-level"
+                                           type="checkbox"
+                                           id="level_{{level.id}}"
+                                           name="level"
+                                           value="{{level.name}}">
+                                    <label class="form-check-label" for="level_{{level.id}}">
+                                        {{level.name}}
+                                    </label>
+                                </div>
                                 {%endfor%}
                             </div>
                         </div>
-                        <div class="mb-4">
-                            <div class="fw-semibold mb-3">Khoảng học phí</div>
+                        <form method="get">
+                            <div class="mb-4">
+                                <div class="fw-semibold mb-3">Khoảng học phí</div>
 
-                            <div class="price-range-wrapper">
-                                <div class="price-track"></div>
+                                <div class="price-range-wrapper">
+                                    <div class="price-track"></div>
 
-                                <input type="range" id="priceMin"
-                                       min="0" max="5000000" step="100000" value="0">
+                                    <input type="range" id="priceMin" name="priceMin"
+                                           min="0" max="5000000" step="100000" value="0">
 
-                                <input type="range" id="priceMax"
-                                       min="0" max="5000000" step="100000" value="5000000">
+                                    <input type="range" id="priceMax" name="priceMax"
+                                           min="0" max="5000000" step="100000" value="5000000">
 
-                                <div class="price-bubble" id="bubbleMin">0đ</div>
-                                <div class="price-bubble" id="bubbleMax">5.000.000đ</div>
+                                    <div class="price-bubble" id="bubbleMin">0đ</div>
+                                    <div class="price-bubble" id="bubbleMax">5.000.000đ</div>
+                                </div>
+
+                                <div class="d-flex justify-content-between small text-muted mt-2">
+                                    <span>0đ</span>
+                                    <span>5.000.000đ</span>
+                                </div>
                             </div>
 
-                            <div class="d-flex justify-content-between small text-muted mt-2">
-                                <span>0đ</span>
-                                <span>5.000.000đ</span>
-                            </div>
-                        </div>
 
-
-                        <button class="btn btn-primary w-100 rounded-pill">
-                            Áp dụng lọc
-                        </button>
-
+                            <button class="btn btn-primary w-100 rounded-pill" type="submit">
+                                Áp dụng lọc
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -145,6 +154,22 @@
             </div>
         </div>
     </div>
+    {%if pages > 1%}
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a class="page-link" href="/courses?page={{page-1 if page>1 else pages}}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+
+        {%for i in range(1, pages+1)%}
+        <li class="page-item"><a class="page-link" href="/courses?page={{i}}">{{i}}</a></li>
+        {%endfor%}
+
+        <li class="page-item">
+            <a class="page-link" href="/courses?page={{page+1 if page<pages else 1}}">Next</a>
+        </li>
+    </ul>
+    {%endif%}
+
 </section>
 
 {% endblock %}

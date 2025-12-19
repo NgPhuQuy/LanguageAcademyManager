@@ -1,3 +1,4 @@
+import math
 from flask import render_template, request, redirect
 from app import app, dao, login, admin, db
 from app.decorators import anonymous_required
@@ -26,11 +27,17 @@ def top_up_my_user():
 @app.route("/courses")
 @app.route("/courses/level/<int:level_id>")
 def my_courses(level_id=None, lang_id=None):
+    price_min = int(request.args.get("priceMin", 0))
+    price_max = int(request.args.get("priceMax", 5_000_000))
     q = request.args.get("q")
+    page = request.args.get("page", 1, type=int)
+    pages = math.ceil(dao.count_course() / app.config["PAGE_SIZE"])
     langs = dao.load_language()
     levels = dao.load_level()
-    courses = dao.load_course(q=q, level_id=level_id, lang_id=lang_id)
-    return render_template("courses.html", courses=courses,languages=langs, levels=levels)
+    courses = dao.load_course(q=q, level_id=level_id, lang_id=lang_id,
+                              price_max=price_max, price_min=price_min,
+                              page=page)
+    return render_template("courses.html", courses=courses,languages=langs, levels=levels, pages=pages, page=page)
 
 
 @app.route("/courses/<int:course_id>")

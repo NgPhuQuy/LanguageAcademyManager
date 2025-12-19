@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Course, Language, User, Level, Goal
+from app.models import Course, Language, User, Level
 import hashlib
 
 
@@ -12,8 +12,8 @@ def load_level():
 def get_level(level_id):
     return Level.query.filter(Level.id.__eq__(level_id))
 
-def load_course(q=None, lang_id=None, page=None, level_id=None):
-    query = Course.query
+def load_course(q=None, lang_id=None, page=None, level_id=None, price_min=0, price_max=5000000):
+    query = Course.query.filter(Course.fee.between(price_min, price_max))
 
     if q:
         query = query.filter(Course.name.contains(q))
@@ -61,9 +61,15 @@ def is_phone_used(phone):
         .filter(User.phone == phone)\
         .first() is not None
 
+def count_course():
+    return Course.query.count()
+
 if __name__=="__main__":
     with app.app_context():
-        print(is_phone_used("0909123453"))
+        print(count_course())
+
         # for i in load_level():
         #     print(i.)
         # print(load_level())
+
+
