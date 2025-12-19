@@ -1,0 +1,131 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid my-5 page-content teacher-task-page">
+
+    <!-- HEADER -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body px-4 py-3">
+
+        <h2 class="fw-bold mb-1 text-primary">
+            <i class="bi bi-person-workspace me-2"></i>
+            Chào mừng, {{ user_role }}
+        </h2>
+
+        <p class="text-muted mb-0">
+            Quản lý nhiệm vụ và bài tập đã giao cho học viên
+        </p>
+
+    </div>
+</div>
+
+
+    <!-- ACTION BAR -->
+    <div class="card border-0 shadow rounded-4 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-3 align-items-center">
+
+                <!-- FILTER -->
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
+
+                        <span class="fw-semibold text-secondary">
+                            Chọn lớp
+                        </span>
+
+                        <select class="form-select w-auto shadow-sm">
+                            <option>Lớp A</option>
+                            <option>Lớp B</option>
+                        </select>
+
+                        <input type="date"
+                               class="form-control w-auto shadow-sm"
+                               value="2025-11-28">
+                    </div>
+                </div>
+
+                <!-- ACTIONS -->
+                <div class="col-lg-6 col-md-12">
+                    <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
+
+                        <button class="btn fw-semibold text-white shadow-sm"
+                                style="background:linear-gradient(135deg,#4f46e5,#06b6d4)">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Thêm nhiệm vụ
+                        </button>
+
+                        <div class="input-group w-auto shadow-sm">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search text-primary"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control border-start-0"
+                                   placeholder="Tìm kiếm...">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card border-0 shadow rounded-4">
+        <div class="card-body p-4 table-responsive">
+
+            <table class="table table-hover align-middle text-center mb-0">
+                <thead style="background:#eef2ff">
+                    <tr class="fw-semibold text-primary">
+                        <th style="width:80px">STT</th>
+                        <th>Hạn nhiệm vụ</th>
+                        <th class="text-start">Nhiệm vụ đã giao</th>
+                        <th style="width:160px">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>30/11/2025</td>
+                        <td class="text-start">
+                            Unit 1: Ngữ pháp cơ bản
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-1"></i>
+                                Xem chi tiết
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>04/12/2025</td>
+                        <td class="text-start">
+                            Unit 3: Từ vựng chuyên ngành
+                        </td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-eye me-1"></i>
+                                Xem chi tiết
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4" class="text-muted text-center py-4">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Chưa có thêm nhiệm vụ nào
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

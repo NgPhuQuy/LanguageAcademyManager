@@ -1,0 +1,121 @@
+{% extends "layout/base.html" %}
+{% block content %}
+
+<div class="container py-4 page-content">
+
+    <!-- WELCOME -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-primary">
+            Chào mừng, Học viên 👋
+        </h2>
+        <p class="text-muted">
+            Tổng quan quá trình học tập của bạn
+        </p>
+    </div>
+
+    <!-- COURSE SELECT -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6">
+            <label class="form-label fw-semibold">
+                📘 Chọn khóa học
+            </label>
+            <select class="form-select form-select-lg shadow-sm" id="courseSelect">
+                <option value="a2" selected>Giao Tiếp A2</option>
+                <option value="b1">Giao Tiếp B1</option>
+                <option value="ielts">IELTS Foundation</option>
+            </select>
+        </div>
+        <!-- ================= THỜI KHÓA BIỂU ================= -->
+    <div class="text-center mb-4">
+        <button class="btn btn-primary rounded-pill px-4"
+                onclick="toggleSchedule()">
+            📅 Xem thời khóa biểu tuần
+        </button>
+    </div>
+    <div id="scheduleBox" class="card shadow border-0 rounded-4 mb-5 d-none">
+
+        <div class="card-header bg-white border-0
+                    d-flex justify-content-between align-items-center px-4 py-3">
+
+            <button class="btn btn-outline-secondary btn-sm"
+                    onclick="prevWeek()">
+                ⬅ Tuần trước
+            </button>
+
+            <h5 class="fw-bold text-primary mb-0" id="weekTitle">
+                Tuần hiện tại
+            </h5>
+
+            <button class="btn btn-outline-secondary btn-sm"
+                    onclick="nextWeek()">
+                Tuần sau ➡
+            </button>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Thứ</th>
+                            <th>Môn học</th>
+                            <th>Giờ học</th>
+                            <th>Giáo viên</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">📚 Tên khóa học</p>
+                    <h5 class="fw-bold" id="courseName">Giao Tiếp A2</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">⭐ Điểm trung bình</p>
+                    <h5 class="fw-bold text-success" id="courseScore">8.5 / 10</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <p class="text-muted mb-1">🕒 Chuyên cần</p>
+                    <h5 class="fw-bold text-info" id="courseAttendance">90%</h5>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-primary">
+            📂 Danh sách chương học
+        </h4>
+    </div>
+
+    <!-- MODULE LIST -->
+    <div class="accordion shadow-sm rounded-4" id="courseModules"></div>
+
+</div>
+
+
+
+{% endblock %}

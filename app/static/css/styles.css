@@ -525,9 +525,17 @@ list-style: none;
 font-size: 14px;
 }
 
+/* ================= NOTIFICATION ================= */
+/* ===== NAV BUTTON ===== */
+.mqd-nav-btn {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+/* ===== NOTIFICATION ===== */
 .notification-wrapper {
-    position: relative;
-    margin-left: 20px;
+    position: relative; /* 🔥 then chốt */
 }
 
 .notification-btn {
@@ -539,129 +547,111 @@ font-size: 14px;
 }
 
 .notify-dot {
-    position: absolute;
-    top: 4px;
-    right: 2px;
     width: 8px;
     height: 8px;
-    background: #ff4d4f;
+    background: red;
     border-radius: 50%;
+    position: absolute;
+    top: 0;
+    right: 2px;
 }
-
 
 .notification-dropdown {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    width: 320px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,.15);
-    display: none;
-    z-index: 999;
-    overflow: hidden;
-}
-
-.notification-dropdown.show {
-    display: block;
-}
-
-.notify-title {
-    padding: 14px;
-    font-weight: bold;
-    border-bottom: 1px solid #eee;
-}
-
-.notify-item {
-    padding: 12px 14px;
-    border-bottom: 1px solid #f1f1f1;
-    cursor: pointer;
-}
-
-.notify-item:hover {
-    background: #f8f9ff;
-}
-
-.notify-item strong {
-    display: block;
-    font-size: 14px;
-}
-
-.notify-item p {
-    font-size: 13px;
-    color: #555;
-    margin: 2px 0;
-}
-
-.notify-item span {
-    font-size: 11px;
-    color: #999;
-}
-
-/* View all */
-.notify-view-all {
-    display: block;
-    text-align: center;
-    padding: 12px;
-    font-size: 13px;
-    color: #3b5bdb;
-    text-decoration: none;
-}
-
-.notify-view-all:hover {
-    background: #f1f3ff;
-}
-/* ===============================
-   FILTER PANEL – BASE
-================================ */
-.filter-panel {
-  display: none;
-  z-index: 2000;
-  background: #fff;
-}
-
-/* Show panel */
-.filter-panel.show {
-  display: block;
-}
-
-/* ===============================
-   DESKTOP (≥ 992px)
-================================ */
-@media (min-width: 501px) {
-  .filter-panel {
     position: absolute;
     top: calc(100% + 12px);
     right: 0;
 
-    width: 340px;
-    max-height: 420px;
-    padding: 20px;
+    width: 360px;
+    max-width: 90vw;
 
-    border-radius: 16px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.18);
+    padding: 12px;
 
-    overflow-y: auto;
-  }
+    display: none;
+    z-index: 9999;
 }
 
-/* ===============================
-   MOBILE (≤ 991px)
-================================ */
-@media (max-width: 500px) {
-  .filter-panel {
-    position: fixed;
-    inset: 0;
+.notification-wrapper:hover .notification-dropdown {
+    display: block;
+}
 
-    width: 100vw;
-    height: 100dvh;
-    padding: 20px;
+.notify-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
 
-    border-radius: 0;
-    box-shadow: none;
+.notify-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
 
-    overflow-y: auto;
-  }
+.notify-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.notify-item span {
+    font-size: 12px;
+    color: #999;
+}
+
+.notify-view-all {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* ===== BALANCE BOX ===== */
+.balance-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: linear-gradient(135deg,#00c6ff,#0072ff);
+    color: #fff;
+    font-weight: 600;
+}
+
+.topup-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* ===== FIX CHO MÀN HÌNH THU NHỎ (PC + MOBILE) ===== */
+@media (max-width: 991.98px) {
+
+    .notification-wrapper {
+        width: 100%;
+    }
+
+    .notification-dropdown {
+        position: relative;      /* 🔥 then chốt */
+        top: 8px;
+        right: auto;
+        left: 0;
+
+        width: 100%;
+        max-width: 100%;
+
+        box-shadow: none;
+        border: 1px solid #eee;
+        border-radius: 12px;
+    }
 }
 
 /* ===============================
@@ -730,4 +720,30 @@ font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
   z-index: 4;
+}
+
+
+/* ===== FILTER PANEL FIX ===== */
+.filter-panel {
+    position: absolute;
+    top: calc(100% + 12px); /* bung ra ngay dưới nút Lọc */
+    right: 0;
+    width: 360px;
+    max-width: 90vw;
+
+    z-index: 1050;
+    display: block;
+
+    /* Ẩn mặc định */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.25s ease;
+}
+
+/* Khi show */
+.filter-panel.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }

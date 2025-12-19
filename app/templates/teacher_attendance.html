@@ -1,0 +1,115 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="container my-5 page-content teacher-attendance">
+
+    <!-- HERO -->
+    <section class="rounded-4 p-5 mb-5 text-white shadow"
+             style="background:linear-gradient(135deg,#4f46e5,#6366f1,#06b6d4)">
+        <div class="text-center">
+            <h1 class="fw-bold mb-2">
+                <i class="bi bi-clipboard-check me-2"></i>
+                Điểm Danh Học Viên
+            </h1>
+            <p class="mb-0 opacity-75">
+                Quản lý – chỉnh sửa – lưu trạng thái điểm danh
+            </p>
+        </div>
+    </section>
+
+    <!-- CONTROL PANEL -->
+    <section class="card border-0 shadow rounded-4 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-3 align-items-end">
+
+                <!-- SEARCH -->
+                <div class="col-md-5">
+                    <label class="form-label fw-semibold text-secondary">
+                        Tìm kiếm học viên
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-primary"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control border-start-0"
+                               placeholder="Nhập tên học viên...">
+                    </div>
+                </div>
+
+                <!-- DATE -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold text-secondary">
+                        Chọn ngày
+                    </label>
+                    <input type="date"
+                           class="form-control">
+                </div>
+
+                <!-- VIEW SAVED -->
+                <div class="col-md-3 d-grid">
+                    <button class="btn btn-outline-primary fw-semibold">
+                        <i class="bi bi-clock-history me-1"></i>
+                        Danh sách đã lưu
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="card border-0 shadow rounded-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0 text-primary">
+                    <i class="bi bi-people-fill me-2"></i>
+                    Danh sách học viên
+                </h4>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0">
+                    <thead style="background:#eef2ff">
+                        <tr class="fw-semibold text-primary">
+                            <th>STT</th>
+                            <th class="text-start">Họ và Tên</th>
+                            <th>Lớp</th>
+                            <th>Điểm danh</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="attendance-body">
+                        <tr>
+                            <td colspan="4"
+                                class="text-center text-muted py-5">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Chưa có dữ liệu — vui lòng chọn ngày để xem danh sách
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Làm mới
+                </button>
+
+                <button class="btn fw-semibold text-white px-4"
+                        style="background:linear-gradient(135deg,#4f46e5,#06b6d4)">
+                    <i class="bi bi-save me-1"></i>
+                    Lưu danh sách
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+</div>
+
+{% endblock %}
