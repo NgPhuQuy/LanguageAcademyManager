@@ -1,0 +1,77 @@
+{% extends "layout/base.html" %}
+{% block content %}
+<div class="page-content public-home">
+
+    <section class="hero-bg-rounded text-center text-white">
+        <div class="container hero-content">
+            <h1 class="hero-title">
+                Khởi Đầu Tương Lai,<br>
+                Khai Phá Tiềm Năng Ngôn Ngữ
+            </h1>
+            <p class="hero-desc">
+                Học ngôn ngữ theo lộ trình cá nhân hóa, từ cơ bản đến chuyên sâu.
+            </p>
+            <a href="/courses" class="btn hero-btn">
+                Đăng Ký Khóa Học Ngay
+            </a>
+        </div>
+    </section>
+
+
+
+
+      <section class="section-soft-gradient">
+
+    <div class="container">
+
+        <!-- ROADMAP -->
+        <h2 class="fw-bold text-center mb-5 title-blue animate-up">
+            ✨ Lộ Trình Đào Tạo Độc Quyền
+        </h2>
+
+        <div class="row g-4 justify-content-center mb-5">
+            {%for l in levels%}
+            <div class="col-md-3 animate-up">
+                <a href="/courses/level/{{l.id}}" class="roadmap-card roadmap-{{l.id}}">
+                    <h5>{{l.name}}</h5>
+                    <p>{{l.slogan}}</p>
+                </a>
+            </div>
+            {%endfor%}
+        </div>
+
+        <!-- STATS -->
+        <h2 class="fw-bold text-center mb-5 title-blue animate-up">
+            MQD Bằng Những Con Số
+        </h2>
+
+        <div class="row g-4 text-center justify-content-center">
+
+            <div class="col-md-4 animate-up">
+                <div class="stat-box">
+                    <h3>2900+</h3>
+                    <p class="text-muted mb-0">Học Viên Đã Tốt Nghiệp</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 animate-up">
+                <div class="stat-box">
+                    <h3>53+</h3>
+                    <p class="text-muted mb-0">Khóa Học Đang Mở</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 animate-up">
+                <div class="stat-box">
+                    <h3>120+</h3>
+                    <p class="text-muted mb-0">Giáo Viên Kinh Nghiệm</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+</div>
+{% endblock %}

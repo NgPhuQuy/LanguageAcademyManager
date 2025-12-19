@@ -1,0 +1,67 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}{{ course.title }} | MQD{% endblock %}
+
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+
+
+        <!-- LEFT CONTENT -->
+        <div class="col-lg-8">
+            <div class="course-main-card">
+                <img src="{{ course.image }}" class="course-thumb" alt="{{ course.title }}">
+
+
+                <div class="p-4">
+                    <h1 class="course-title">{{ course.title }}</h1>
+
+
+                    <div class="course-meta">
+                        {{ course.level }} · {{ course.duration }} Hours · GV · {{ course.teacher }}
+                    </div>
+
+
+                    <p class="course-desc">
+                        {{ course.description }}
+                    </p>
+
+
+                    <h5 class="mt-4">Bạn sẽ học được gì?</h5>
+                    <ul class="course-list">
+                        {% for item in course.goals %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="course-sidebar">
+                <div class="price">{{ "{:,.0f}".format(course.fee) }} VND / khóa</div>
+
+
+                <a href="" class="btn btn-primary w-100 mt-3">
+                    Đăng ký ngay
+                </a>
+
+
+                <hr>
+
+
+                <ul class="sidebar-info">
+                    <li>📘 Trình độ: {{ course.level }}</li>
+                    <li>⏱ Thời lượng: {{ course.duration }} Hours</li>
+                    <li>👨‍🏫 Giảng viên: {{ course.teacher }}</li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+{% endblock %}

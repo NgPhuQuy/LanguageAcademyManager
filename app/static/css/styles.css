@@ -1,0 +1,733 @@
+/* ===== HEADER BACKGROUND ===== */
+.mqd-header {
+    background-color: #eef4ff; /* xanh dương rất nhạt */
+}
+
+.mqd-footer {
+    margin-top: 0 !important;
+}
+
+html, body {
+    background: transparent;
+}
+
+
+/* ===== NAV BUTTON ===== */
+.mqd-nav-btn {
+    border: 1px solid #dee2e6;
+    text-decoration: none;
+    color: #2b3a67;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    transition: all 0.25s ease;
+}
+
+/* ===== HOVER EFFECT (KHÔNG BORDER) ===== */
+.mqd-nav-btn:hover {
+    background-color: #dbe7ff;
+    color: #1f3cff;
+}
+
+/* ===== AUTH BUTTON ===== */
+.mqd-auth-btn {
+    background-color: #ffffff;
+    border: 1.5px solid rgba(13, 110, 253, 0.75);
+    color: #0d6efd;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* hover auth */
+.mqd-auth-btn:hover {
+    background-color: #1f3cff;
+    color: #ffffff;
+}
+
+.mqd-logout-btn {
+    border: 1.5px solid rgba(220, 53, 69, 0.75); /* đỏ rõ hơn nhưng vẫn mềm */
+    color: #dc3545;
+    background-color: #f8f9fa;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+}
+
+/* hover auth */
+.mqd-logout-btn:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+/*===============================================*/
+
+/* Hình nền và trang chủ */
+/* ===== NỀN CHUYỂN MƯỢT CHUNG ===== */
+.section-soft-gradient {
+    position: relative;
+    background: linear-gradient(
+        180deg,
+        #f5f8ff 0%,
+        #eef3ff 45%,
+        #fdf2e3 75%
+    );
+    padding: 90px 0 180px;
+    overflow: hidden;
+}
+
+/* ===== HERO ===== */
+.hero-bg-rounded {
+    min-height: 45vh;
+    background:
+        linear-gradient(
+             rgba(40, 60, 120, 0.75),
+            rgba(90, 110, 200, 0.75)
+        ),
+        url("https://media.istockphoto.com/id/1398562021/vi/anh/h%C3%ACnh-b%C3%B3ng-ng%C6%B0%E1%BB%9Di-%C4%91%C3%A0n-%C3%B4ng-nh%E1%BA%A3y-qua-v%C3%A1ch-%C4%91%C3%A1-v%E1%BB%9Bi-t%C3%B4i-c%C3%B3-th%E1%BB%83-l%C3%A0m-%C4%91i%E1%BB%81u-%C4%91%C3%B3-t%E1%BB%AB-trong-%C3%A1nh-s%C3%A1ng-m%E1%BA%B7t-tr%E1%BB%9Di.jpg?s=612x612&w=0&k=20&c=ioxomSRkwIclMIvhDyGSZIV_tSxakiHSaDQ-R_3H_YE=");
+
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+
+    border-bottom-left-radius: 120% 18%;
+    border-bottom-right-radius: 120% 18%;
+}
+
+.hero-content {
+    animation: fadeUp 1s ease forwards;
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 800;
+}
+
+.hero-desc {
+    font-size: 18px;
+    opacity: 0.95;
+    margin: 15px 0 25px;
+}
+
+.hero-btn {
+    background: #ffcc33;
+    color: #333;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.hero-btn:hover {
+    background: #ffb703;
+    transform: scale(1.05);
+}
+
+/* ===== SEARCH ===== */
+.search-soft {
+    padding: 40px 0;
+    background: #f7f9ff;
+}
+
+.search-box {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    font-size: 16px;
+}
+
+/* ===== TITLES ===== */
+.title-blue {
+    color: #3a3274;
+    font-weight: 800;
+}
+
+/* ===== ROADMAP ===== */
+/* ===== ROADMAP CARD BASE ===== */
+.roadmap-card {
+    display: block;
+    border-radius: 18px;
+    padding: 26px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #1f2937;
+    font-weight: 500;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* title */
+.roadmap-card h5 {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+/* ===== MÀU TỪNG CẤP ===== */
+.roadmap-1 {
+    background: linear-gradient(135deg, #e0edff, #f5f8ff);
+}
+.roadmap-1 h5 {
+    color: #2563eb;
+}
+
+.roadmap-2 {
+    background: linear-gradient(135deg, #d9f7f1, #f1fdfb);
+}
+.roadmap-2 h5 {
+    color: #0f766e;
+}
+
+.roadmap-3 {
+    background: linear-gradient(135deg, #ede9fe, #f8f7ff);
+}
+.roadmap-3 h5 {
+    color: #6d28d9;
+}
+
+.roadmap-4 {
+    background: linear-gradient(135deg, #fff0d9, #fff9f0);
+}
+.roadmap-4 h5 {
+    color: #ea580c;
+}
+
+/* ===== HOVER HIỆU ỨNG ===== */
+.roadmap-card:hover {
+    transform: translateY(-10px) scale(1.04);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
+
+/* ===== STATS ===== */
+.stats-soft {
+    background: linear-gradient(180deg, #f4f6ff, #ffffff);
+}
+
+.stat-box {
+     background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 18px;
+    padding: 32px 20px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+  }
+
+.stat-box h3 {
+    font-size: 34px;
+    color: #5d54a4;
+    font-weight: 800;
+}
+
+.stat-box:hover {
+ transform: translateY(-8px);
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-up {
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+
+/* ===== ROADMAP SECTION ===== */
+.roadmap-section {
+    background: linear-gradient(
+        180deg,
+        #f5f8ff 0%,
+        #eef4ff 100%
+    );
+    border-radius: 40px;
+    padding: 80px 0;
+}
+
+/* hiệu ứng xuất hiện */
+.animate-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.8s ease forwards;
+}
+
+
+/*===================================================*/
+/*dổi các phiên bản header*/
+.dev-switch {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #000;
+    padding: 10px;
+    border-radius: 12px;
+    z-index: 9999;
+}
+
+.dev-switch a {
+    display: block;
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 10px;
+    text-decoration: none;
+}
+
+.dev-switch a:hover {
+    background: #2563eb;
+}
+
+/*TRANG ĐĂNG NHẬP*/
+/* ===== LOGIN PAGE ===== */
+.login-section {
+    min-height: calc(100vh - 140px);
+    background: linear-gradient(
+        180deg,
+        #f5f8ff 0%,
+        #eef3ff 60%,
+        #ffffff 100%
+    );
+    padding: 80px 0;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 35px 30px;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+}
+
+/* animation */
+.animate-fade {
+    animation: fadeUp 0.8s ease forwards;
+}
+
+.input-group-text {
+    border-radius: 12px 0 0 12px;
+}
+
+.form-control {
+    border-radius: 0 12px 12px 0;
+    padding: 12px;
+}
+
+/* button */
+.btn-primary {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    border: none;
+    border-radius: 14px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #4338ca, #2563eb);
+}
+
+/*TRANG CƠ Bản*/
+
+.page-content {
+    background: linear-gradient(180deg, #f8f9ff, #ffffff);
+}
+.course-card {
+    transition: all 0.3s ease;
+    border-radius: 18px;
+}
+
+.course-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+}
+
+.course-img {
+    height: 200px;
+    object-fit: cover;
+}
+.btn-course {
+    background: linear-gradient(135deg, #5f5bd6, #7b77ff);
+    border: none;
+}
+
+.btn-course:hover {
+    opacity: 0.9;
+}
+
+.course-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin: 8px 0 10px;
+}
+
+.course-price span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+/* CARD CHA */
+.qr-bank-card {
+    border-radius: 12px;
+}
+
+/* ===== CỘT TRÁI ===== */
+.qr-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    background: #fff;
+}
+
+.qr-title {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.qr-wrapper {
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    margin: 12px auto;
+}
+
+.qr-wrapper img {
+    width: 100%;
+    display: block;
+}
+
+.qr-note {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* ===== CỘT PHẢI ===== */
+.bank-info {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+}
+
+.bank-title {
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.info-row span {
+    width: 120px;
+    color: #6b7280;
+}
+
+/* ===== NÚT SAO CHÉP ===== */
+.btn-copy {
+    margin-left: auto;
+    padding: 4px 10px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid #22c55e;
+    background: #f0fdf4;
+    color: #16a34a;
+    cursor: pointer;
+}
+
+.btn-copy:hover {
+    background: #22c55e;
+    color: #fff;
+}
+
+.course-main-card {
+background: #fff;
+border-radius: 24px;
+overflow: hidden;
+box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+
+.course-thumb {
+width: 100%;
+height: 340px;
+object-fit: cover;
+}
+
+
+.course-title {
+font-weight: 700;
+margin-bottom: 8px;
+}
+
+
+.course-meta {
+color: #6c757d;
+margin-bottom: 16px;
+}
+
+
+.course-desc {
+font-size: 15px;
+line-height: 1.7;
+}
+
+
+.course-list {
+padding-left: 18px;
+}
+
+
+.course-list li {
+margin-bottom: 8px;
+}
+
+
+.course-sidebar {
+background: #fff;
+border-radius: 20px;
+padding: 24px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+position: sticky;
+top: 90px;
+}
+
+
+.course-sidebar .price {
+font-size: 22px;
+font-weight: 700;
+color: #2563eb;
+}
+
+
+.sidebar-info {
+padding-left: 0;
+list-style: none;
+font-size: 14px;
+}
+
+.notification-wrapper {
+    position: relative;
+    margin-left: 20px;
+}
+
+.notification-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    position: relative;
+}
+
+.notify-dot {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background: #ff4d4f;
+    border-radius: 50%;
+}
+
+
+.notification-dropdown {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+    display: none;
+    z-index: 999;
+    overflow: hidden;
+}
+
+.notification-dropdown.show {
+    display: block;
+}
+
+.notify-title {
+    padding: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+}
+
+.notify-item {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+}
+
+.notify-item:hover {
+    background: #f8f9ff;
+}
+
+.notify-item strong {
+    display: block;
+    font-size: 14px;
+}
+
+.notify-item p {
+    font-size: 13px;
+    color: #555;
+    margin: 2px 0;
+}
+
+.notify-item span {
+    font-size: 11px;
+    color: #999;
+}
+
+/* View all */
+.notify-view-all {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    font-size: 13px;
+    color: #3b5bdb;
+    text-decoration: none;
+}
+
+.notify-view-all:hover {
+    background: #f1f3ff;
+}
+/* ===============================
+   FILTER PANEL – BASE
+================================ */
+.filter-panel {
+  display: none;
+  z-index: 2000;
+  background: #fff;
+}
+
+/* Show panel */
+.filter-panel.show {
+  display: block;
+}
+
+/* ===============================
+   DESKTOP (≥ 992px)
+================================ */
+@media (min-width: 501px) {
+  .filter-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: 340px;
+    max-height: 420px;
+    padding: 20px;
+
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+
+    overflow-y: auto;
+  }
+}
+
+/* ===============================
+   MOBILE (≤ 991px)
+================================ */
+@media (max-width: 500px) {
+  .filter-panel {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100dvh;
+    padding: 20px;
+
+    border-radius: 0;
+    box-shadow: none;
+
+    overflow-y: auto;
+  }
+}
+
+/* ===============================
+   SEARCH + FILTER SPACING
+================================ */
+.search-filter-wrapper {
+  margin-bottom: 48px;
+}
+
+.price-range-wrapper {
+  position: relative;
+  height: 56px;
+  margin-top: 8px;
+}
+
+.price-range-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 6px;
+  z-index: 1;
+}
+
+.price-range-wrapper input[type=range] {
+  position: absolute;
+  width: 100%;
+  top: 22px;
+  background: none;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.price-range-wrapper input[type=range]::-webkit-slider-thumb {
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #2563eb;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+.price-track {
+  position: absolute;
+  top: 28px;
+  height: 6px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border-radius: 6px;
+  z-index: 2;
+}
+
+.price-bubble {
+  position: absolute;
+  top: -14px;
+  transform: translateX(-50%);
+  background: #2563eb;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 4;
+}
