@@ -18,6 +18,14 @@ def profile_user(user_id):
     return render_template("profile.html", user=user)
 
 
+@app.context_processor
+def common_attribute():
+    return {
+        "languages": dao.load_language(),
+        "levels": dao.load_level(),
+        "notifications":dao.load_notifications(current_user.id)
+    }
+
 @app.route("/topup")
 @login_required
 def top_up_my_user():
@@ -32,12 +40,12 @@ def my_courses(level_id=None, lang_id=None):
     q = request.args.get("q")
     page = request.args.get("page", 1, type=int)
     pages = math.ceil(dao.count_course() / app.config["PAGE_SIZE"])
-    langs = dao.load_language()
     levels = dao.load_level()
     courses = dao.load_course(q=q, level_id=level_id, lang_id=lang_id,
                               price_max=price_max, price_min=price_min,
                               page=page)
-    return render_template("courses.html", courses=courses,languages=langs, levels=levels, pages=pages, page=page)
+    return render_template("courses.html", courses=courses, levels=levels,
+                           pages=pages, page=page)
 
 
 @app.route("/courses/<int:course_id>")
@@ -84,7 +92,7 @@ def login_my_user():
 
         if user:
             login_user(user)
-            return redirect("/")  # ERROR!!!!
+            return redirect("/")
 
         else:
             err_msg = "Tài khoản hoặc mật khẩu không đúng!!"
@@ -135,27 +143,7 @@ def register_my_user():
 @app.route("/notifications")
 @login_required
 def notifications_page():
-    notifications = [
-        {
-            "title": "Lịch học mới",
-            "content": "Lớp tiếng Anh giao tiếp bắt đầu tối nay.",
-            "time": "5 phút trước",
-            "is_read": False
-        },
-        {
-            "title": "Bài tập mới",
-            "content": "Giáo viên đã giao bài luyện Listening.",
-            "time": "1 giờ trước",
-            "is_read": True
-        },
-        {
-            "title": "Kết quả thi thử",
-            "content": "Bạn đã hoàn thành bài thi trình độ.",
-            "time": "Hôm nay",
-            "is_read": True
-        }
-    ]
-    return render_template("notifications.html", notifications=notifications)
+    return render_template("notifications.html")
 
 
 

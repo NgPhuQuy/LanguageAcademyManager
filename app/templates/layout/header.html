@@ -40,32 +40,14 @@
 
                         <div class="notification-dropdown" id="notifyDropdown">
                             <h6 class="notify-title">Thông báo</h6>
-
+                            {% for noti in notifications[:6] %}
                             <div class="notify-item">
-                                <strong>Lịch học mới</strong>
-                                <p>Lớp tiếng Anh giao tiếp bắt đầu tối nay</p>
-                                <span>5 phút trước</span>
+                                <strong>{{ noti.name }}</strong>
+                                <p>{{ noti.content }}</p>
+                                <span>{{ noti.created_at }}</span>
                             </div>
-
-                            <div class="notify-item">
-                                <strong>Bài tập mới</strong>
-                                <p>Giáo viên đã giao bài luyện Listening</p>
-                                <span>1 giờ trước</span>
-                            </div>
-
-                            <div class="notify-item">
-                                <strong>Kết quả thi thử</strong>
-                                <p>Bạn đã hoàn thành bài thi trình độ</p>
-                                <span>Hôm nay</span>
-                            </div>
-
-                            <div class="notify-item">
-                                <strong>Thông báo hệ thống</strong>
-                                <p>Cập nhật giao diện mới</p>
-                                <span>2 ngày trước</span>
-                            </div>
-
-                            <a  href="/notifications" class="notify-view-all">Xem tất cả</a>
+                            {% endfor %}
+                            <a href="/notifications" class="notify-view-all">Xem tất cả</a>
                         </div>
                     </div>
 

@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Course, Language, User, Level
+from app.models import Course, Language, User, Level, Notification
 import hashlib
 
 
@@ -64,9 +64,12 @@ def is_phone_used(phone):
 def count_course():
     return Course.query.count()
 
+def load_notifications(user_id):
+    return Notification.query.filter(Notification.user_id.__eq__(user_id))
+
 if __name__=="__main__":
     with app.app_context():
-        print(count_course())
+        print(load_notifications(1))
 
         # for i in load_level():
         #     print(i.)
