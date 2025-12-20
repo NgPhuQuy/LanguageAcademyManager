@@ -12,6 +12,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:npq24102005@localh
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 12
 app.config["SCORES"] = 3
+app.config["MAX_STUDENTS_PER_COURSE"] = 25
 cloudinary.config(cloud_name='dtvg4cpoq',
                   api_key='211564137488191',
                   api_secret='otiD0T9BFzzg9UyKGcTb6MHi3Ow')

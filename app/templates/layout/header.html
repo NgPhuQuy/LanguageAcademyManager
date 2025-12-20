@@ -25,10 +25,11 @@
                     <a href="/contact" class="mqd-nav-btn">Liên hệ</a>
 
                     {% if current_user.is_authenticated %}
-
-                    <a href="/user/profile/{{current_user.id}}" class="mqd-nav-btn">
+                    <a href="/test" class="mqd-nav-btn">Thi thử</a>
+                    <a href="/user/profile" class="mqd-nav-btn">
                         Trang cá nhân
                     </a>
+                    <a href="/my-courses" class="mqd-nav-btn">Khóa học của tôi</a>
 
                     <!-- 🔔 NOTIFICATION (BẮT BUỘC BỌC CHUNG) -->
                     <div class="notification-wrapper ms-lg-2">
@@ -64,7 +65,6 @@
 
                     {% else %}
 
-                    <a href="/test" class="mqd-nav-btn">Thi thử</a>
                     <a href="/login" class="mqd-nav-btn mqd-auth-btn">Đăng Nhập</a>
                     <a href="/register" class="mqd-nav-btn mqd-auth-btn">Đăng Ký</a>
 
