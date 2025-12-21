@@ -13,7 +13,9 @@
         </h2>
 
         <div class="btn-group">
-            <button class="btn btn-outline-primary">
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    onclick="submitAndReload()">
                 <i class="bi bi-cloud-arrow-down me-1"></i>
                 Lưu bảng điểm
             </button>
@@ -27,43 +29,45 @@
                 <i class="bi bi-file-earmark-spreadsheet me-1"></i>
                 Xuất file
             </button>
+
+            <button type="button"
+                    class="btn btn-outline-info"
+                    onclick="addScoreColumn()">
+                ➕ Thêm cột điểm
+            </button>
         </div>
     </div>
 
-    <!-- CONTROL PANEL -->
+    <!-- CONTROL -->
     <div class="card border-0 shadow rounded-4 mb-4" style="background:#f8fafc">
         <div class="card-body">
             <div class="row g-3">
 
-                <!-- CHỌN LỚP -->
+                <!-- COURSE -->
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Chọn lớp</label>
-
                     <div class="dropdown">
                         <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center"
                                 data-bs-toggle="dropdown">
                             <span>
-                                <i class="bi bi-bookmark-fill me-2 text-primary"></i>
-                                <span id="selectedClassText">
-                                    {% if selected_course_id %}
-                                        {{ courses
-                                            | selectattr("id", "equalto", selected_course_id|int)
-                                            | first
-                                            | attr("name")
-                                        }}
-                                    {% else %}
-                                        Chọn lớp...
-                                    {% endif %}
-                                </span>
+                                {% if selected_course_id %}
+                                    {{ courses
+                                        | selectattr("id", "equalto", selected_course_id|int)
+                                        | first
+                                        | attr("name") }}
+                                {% else %}
+                                    Chọn lớp...
+                                {% endif %}
                             </span>
                             <i class="bi bi-chevron-down"></i>
                         </button>
 
-                        <ul class="dropdown-menu w-100 shadow-sm border-0">
+                        <ul class="dropdown-menu w-100">
                             {% for c in courses %}
                             <li>
-                                <a class="dropdown-item" href="?course_id={{ c.id }}">
-                                    📘 {{ c.name }}
+                                <a class="dropdown-item"
+                                   href="/teacher/courses?course_id={{ c.id }}">
+                                    {{ c.name }}
                                 </a>
                             </li>
                             {% endfor %}
@@ -71,21 +75,20 @@
                     </div>
                 </div>
 
-                <!-- NGÀY -->
+                <!-- DATE -->
                 <div class="col-md-3">
                     <label class="form-label fw-semibold text-secondary">Ngày</label>
-                    <input type="date" class="form-control"
-                           value="{{ request.args.get('date', '') }}">
+                    <input type="date" class="form-control">
                 </div>
 
                 <!-- SEARCH -->
                 <div class="col-md-5">
-                    <form method="get">
-                        <label class="form-label fw-semibold text-secondary">
-                            Tìm kiếm học viên
-                        </label>
+                    <form method="get" action="/teacher/courses">
+                        <input type="hidden" name="course_id" value="{{ selected_course_id }}">
+                        <label class="form-label fw-semibold text-secondary">Tìm kiếm học viên</label>
                         <input type="text" class="form-control"
-                               placeholder="🔎 Nhập tên học viên..." name="kw">
+                               name="kw" value="{{ kw or '' }}"
+                               placeholder="Nhập tên học viên">
                     </form>
                 </div>
 
@@ -94,14 +97,16 @@
     </div>
 
     <!-- TABLE -->
-    <div class="card border-0 shadow rounded-4">
-        <div class="card-body p-0">
+    <form method="post" action="/teacher/courses" id="gradeForm">
+        <input type="hidden" name="course_id" value="{{ selected_course_id }}">
+
+        <div class="card border-0 shadow rounded-4">
             <div class="table-responsive">
-                <table class="table table-hover align-middle text-center mb-0">
-                    <thead class="fw-semibold text-primary" style="background:#eef2ff">
-                    <tr>
+                <table class="table table-hover text-center mb-0">
+                    <thead>
+                    <tr id="score-header">
                         <th>STT</th>
-                        <th>Họ và Tên</th>
+                        <th>Họ và tên</th>
                         <th>Chuyên cần</th>
                         <th>Giữa kỳ</th>
                         <th>Cuối kỳ</th>
@@ -110,57 +115,40 @@
                     </thead>
 
                     <tbody>
-                    {% if enrollments %}
                     {% for e in enrollments %}
+                    {% set a = None %}
+                    {% set m = None %}
+                    {% set f = None %}
 
-                    {# --- TÁCH SCORE THEO NAME --- #}
-                    {% set attendance = None %}
-                    {% set midterm = None %}
-                    {% set final = None %}
-
-                    {% for sc in e.scores %}
-                    {% if sc.name == "ATTENDANCE" %}
-                    {% set attendance = sc %}
-                    {% elif sc.name == "MIDTERM" %}
-                    {% set midterm = sc %}
-                    {% elif sc.name == "FINAL" %}
-                    {% set final = sc %}
-                    {% endif %}
+                    {% for s in e.scores %}
+                    {% if s.name == 'ATTENDANCE' %}{% set a = s %}{% endif %}
+                    {% if s.name == 'MIDTERM' %}{% set m = s %}{% endif %}
+                    {% if s.name == 'FINAL' %}{% set f = s %}{% endif %}
                     {% endfor %}
 
-                    <tr>
+                    {% set total = 0 %}
+                    {% if a %}{% set total = total + a.score * a.rate %}{% endif %}
+                    {% if m %}{% set total = total + m.score * m.rate %}{% endif %}
+                    {% if f %}{% set total = total + f.score * f.rate %}{% endif %}
+
+                    <tr data-enrollment="{{ e.id }}">
                         <td>{{ loop.index }}</td>
+                        <td class="text-start">{{ e.user.name }}</td>
 
-                        <td class="text-start">
-                            {{ e.user.name }}
-                        </td>
-
-                        <td>
-                            <input type="number" step="0.1"
+                        <td><input type="number" step="0.1"
                                    name="attendance_{{ e.id }}"
-                                   value="{{ attendance.score if attendance else '' }}"
-                                   class="form-control form-control-sm text-center">
-                        </td>
+                                   value="{{ a.score if a else '' }}"
+                                   class="form-control form-control-sm"></td>
 
-                        <td>
-                            <input type="number" step="0.1"
+                        <td><input type="number" step="0.1"
                                    name="midterm_{{ e.id }}"
-                                   value="{{ midterm.score if midterm else '' }}"
-                                   class="form-control form-control-sm text-center">
-                        </td>
+                                   value="{{ m.score if m else '' }}"
+                                   class="form-control form-control-sm"></td>
 
-                        <td>
-                            <input type="number" step="0.1"
+                        <td><input type="number" step="0.1"
                                    name="final_{{ e.id }}"
-                                   value="{{ final.score if final else '' }}"
-                                   class="form-control form-control-sm text-center">
-                        </td>
-
-                        {# --- TÍNH ĐIỂM TỔNG --- #}
-                        {% set total = 0 %}
-                        {% if attendance %}{% set total = total + attendance.score * attendance.rate %}{% endif %}
-                        {% if midterm %}{% set total = total + midterm.score * midterm.rate %}{% endif %}
-                        {% if final %}{% set total = total + final.score * final.rate %}{% endif %}
+                                   value="{{ f.score if f else '' }}"
+                                   class="form-control form-control-sm"></td>
 
                         <td>
                             {% if total >= 5 %}
@@ -170,22 +158,35 @@
                             {% endif %}
                         </td>
                     </tr>
-
                     {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td colspan="6" class="text-muted py-4">
-                            Chưa có dữ liệu
-                        </td>
-                    </tr>
-                    {% endif %}
                     </tbody>
-
                 </table>
             </div>
         </div>
-    </div>
-
+    </form>
 </div>
+
+<script>
+    function submitAndReload() {
+        document.getElementById("gradeForm").submit();
+    }
+
+    let extraCol = 0;
+    function addScoreColumn() {
+        extraCol++;
+        const th = document.createElement("th");
+        th.innerText = "Điểm phụ " + extraCol;
+        document.getElementById("score-header").insertBefore(th,
+            document.getElementById("score-header").lastElementChild);
+
+        document.querySelectorAll("tr[data-enrollment]").forEach(row => {
+            const td = document.createElement("td");
+            td.innerHTML = `<input type="number" step="0.1"
+                             name="extra_${extraCol}_${row.dataset.enrollment}"
+                             class="form-control form-control-sm">`;
+            row.insertBefore(td, row.lastElementChild);
+        });
+    }
+</script>
 
 {% endblock %}

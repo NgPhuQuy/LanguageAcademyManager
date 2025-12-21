@@ -1,8 +1,19 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boolean, Text, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boolean, Text, Date, Time, Enum
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from app import db, app
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta, UTC
+import enum
+
+
+class Weekday(enum.IntEnum):
+    SUNDAY = 1
+    MONDAY = 2
+    TUESDAY = 3
+    WEDNESDAY = 4
+    THURSDAY = 5
+    FRIDAY = 6
+    SATURDAY = 7
 
 
 class Base(db.Model):
@@ -17,11 +28,12 @@ class Base(db.Model):
 class User(Base, UserMixin):
     username = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    avatar = Column(String(300), default="https://res.cloudinary.com/dtvg4cpoq/image/upload/v1766309306/nbkvoo9yacn0posek1ej.jpg")
+    avatar = Column(String(300),
+                    default="https://res.cloudinary.com/dtvg4cpoq/image/upload/v1766309306/nbkvoo9yacn0posek1ej.jpg")
     phone = Column(String(20), nullable=False, unique=True)
     status = Column(Boolean, default=True)
     money = Column(Integer, default=1_000_000_000)
-    email = Column(String(255),nullable=False, unique=True)
+    email = Column(String(255), nullable=False, unique=True)
 
     enrollment = relationship('Enrollment', backref="user", lazy=True)
     user_role = relationship('UserRole', backref='user', lazy=True)
@@ -58,7 +70,8 @@ class Level(Base):
 
 class Course(Base):
     fee = Column(Float, default=0.0)
-    image = Column(String(255), default="https://res.cloudinary.com/dtvg4cpoq/image/upload/v1766066896/%E1%BA%A3nh_kh%C3%B3a_h%E1%BB%8Dc_ti%E1%BA%BFng_anh_svycnr.jpg")
+    image = Column(String(255),
+                   default="https://res.cloudinary.com/dtvg4cpoq/image/upload/v1766066896/%E1%BA%A3nh_kh%C3%B3a_h%E1%BB%8Dc_ti%E1%BA%BFng_anh_svycnr.jpg")
     description = Column(String(255))
     duration = Column(Integer, default=30)
     lang_id = Column(Integer, ForeignKey(Language.id), nullable=False)
@@ -68,14 +81,26 @@ class Course(Base):
     notifications = relationship("Notification", backref="course", lazy=True)
     goals = relationship("Goal", backref="course", lazy=True)
     enrollment = relationship('Enrollment', backref='course', lazy=True)
+    schedule = relationship('Schedule', backref="course", lazy=True)
+
+
+class Schedule(db.Model):
+    id = Column(Integer, primary_key=True)
+    course_id = Column(Integer, ForeignKey(Course.id), nullable=False)
+    weekday = Column(Enum(Weekday), default=Weekday.MONDAY)
+    start_time = Column(Time, default=time(18, 0))
+    end_time = Column(Time, default=time(20, 0))
+
 
 class Goal(db.Model):
-    id = Column(Integer, primary_key= True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     content = Column(Text)
 
     course_id = Column(Integer, ForeignKey(Course.id), nullable=False)
+
     def __str__(self):
         return self.content
+
 
 class Enrollment(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -92,6 +117,7 @@ class Score(Base):
     rate = Column(Float, default=1.0)
     enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
 
+
 class Attendance(db.Model):
     id = Column(Integer, primary_key=True)
     enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
@@ -103,6 +129,7 @@ class Attendance(db.Model):
 class Bill(Base):
     id_cashier = Column(Integer, ForeignKey(User.id), nullable=False)
 
+
 class Notification(Base):
     content = Column(String(255))
     is_read = Column(Boolean, default=False)
@@ -110,6 +137,25 @@ class Notification(Base):
 
     user_id = Column(Integer, ForeignKey(User.id))
     course_id = Column(Integer, ForeignKey(Course.id))
+
+
+class Task(Base):
+    description = Column(Text)
+    deadline = Column(DateTime, default=lambda: datetime.now(UTC) + timedelta(days=2))
+    course_id = Column(Integer, ForeignKey("course.id"), nullable=False)
+    created_date = Column(DateTime,default=datetime.now)
+    course = db.relationship("Course", backref="tasks")
+
+
+class Submission(Base):
+    task_id = db.Column(db.Integer, db.ForeignKey("task.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    content = db.Column(db.Text)
+    file_url = db.Column(db.String(255))
+    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    task = db.relationship("Task", backref="submissions")
+    student = db.relationship("User")
+
 
 # class Voucher(Base):
 #     discount = Column(Float, default=0.0)
@@ -226,10 +272,14 @@ if __name__ == "__main__":
         c4.teacher = u2
         c5.teacher = u2
 
-        l1 = Level(name="STARTER", description="Làm quen ngôn ngữ – dễ hiểu – học từ con số 0", slogan="Nắm vững kiến thức nhập môn")
-        l2 = Level(name="BEGINNER", description="Dành cho người mới bắt đầu – xây dựng nền móng vững chắc", slogan="Xây dựng tư duy ngôn ngữ")
-        l3 = Level(name="INTERMEDIATE", description="Dành cho học viên đã có nền tảng – nâng cao kỹ năng và phản xạ", slogan="Phát triển kỹ năng chuyên sâu")
-        l4 = Level(name="ADVANCED", description="Dành cho học viên muốn sử dụng ngôn ngữ chuyên nghiệp", slogan="Làm chủ ngôn ngữ & ứng dụng")
+        l1 = Level(name="STARTER", description="Làm quen ngôn ngữ – dễ hiểu – học từ con số 0",
+                   slogan="Nắm vững kiến thức nhập môn")
+        l2 = Level(name="BEGINNER", description="Dành cho người mới bắt đầu – xây dựng nền móng vững chắc",
+                   slogan="Xây dựng tư duy ngôn ngữ")
+        l3 = Level(name="INTERMEDIATE", description="Dành cho học viên đã có nền tảng – nâng cao kỹ năng và phản xạ",
+                   slogan="Phát triển kỹ năng chuyên sâu")
+        l4 = Level(name="ADVANCED", description="Dành cho học viên muốn sử dụng ngôn ngữ chuyên nghiệp",
+                   slogan="Làm chủ ngôn ngữ & ứng dụng")
 
         c1.level = l1
         c2.level = l2
@@ -285,6 +335,7 @@ if __name__ == "__main__":
         def add_goals(course, goals):
             for g in goals:
                 db.session.add(Goal(content=g, course=course))
+
 
         add_goals(c1, [
             "Phát âm chuẩn các âm cơ bản trong tiếng Anh",
@@ -563,4 +614,52 @@ if __name__ == "__main__":
             )
             notifications.append(noti)
         db.session.add_all(notifications)
+        db.session.commit()
+
+
+        # ====== THÊM THỜI KHÓA BIỂU ======
+
+        def add_schedule(course, weekdays):
+            for wd in weekdays:
+                db.session.add(Schedule(
+                    course_id=course.id,
+                    weekday=wd,  # Enum Weekday
+                    start_time=time(18, 0),
+                    end_time=time(20, 0)
+                ))
+
+
+        # --- Các khóa tiếng Anh ---
+        add_schedule(c1, [Weekday.MONDAY, Weekday.WEDNESDAY])
+        add_schedule(c2, [Weekday.TUESDAY, Weekday.THURSDAY])
+        add_schedule(c3, [Weekday.TUESDAY, Weekday.THURSDAY])
+        add_schedule(c4, [Weekday.MONDAY, Weekday.WEDNESDAY])
+        add_schedule(c5, [Weekday.FRIDAY])
+
+        add_schedule(c6, [Weekday.MONDAY, Weekday.WEDNESDAY])
+        add_schedule(c7, [Weekday.TUESDAY, Weekday.THURSDAY])
+        add_schedule(c8, [Weekday.FRIDAY])
+        add_schedule(c9, [Weekday.TUESDAY, Weekday.THURSDAY])
+        add_schedule(c10, [Weekday.SATURDAY])
+
+        # --- Tiếng Pháp ---
+        add_schedule(c_fr1, [Weekday.SATURDAY])
+        add_schedule(c_fr2, [Weekday.SUNDAY])
+
+        # --- Tiếng Hàn ---
+        add_schedule(c_kr1, [Weekday.MONDAY, Weekday.WEDNESDAY])
+        add_schedule(c_kr2, [Weekday.TUESDAY, Weekday.THURSDAY])
+
+        # --- Tiếng Nhật ---
+        add_schedule(c_jp1, [Weekday.SATURDAY])
+        add_schedule(c_jp2, [Weekday.SUNDAY])
+
+        # --- Tiếng Trung ---
+        add_schedule(c_cn1, [Weekday.MONDAY, Weekday.WEDNESDAY])
+        add_schedule(c_cn2, [Weekday.TUESDAY, Weekday.THURSDAY])
+
+        # --- Tiếng Đức ---
+        add_schedule(c_de1, [Weekday.SATURDAY])
+        add_schedule(c_de2, [Weekday.SUNDAY])
+
         db.session.commit()
