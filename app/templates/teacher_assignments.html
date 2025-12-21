@@ -1,27 +1,24 @@
 {% extends "layout/base.html" %}
-
+{% block title %}Giao bài tập{% endblock %}
 {% block content %}
 
 <div class="container-fluid my-5 page-content teacher-task-page">
 
     <!-- HEADER -->
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body px-4 py-3">
-
-        <h2 class="fw-bold mb-1 text-primary">
-            <i class="bi bi-person-workspace me-2"></i>
-            Chào mừng, {{ user_role }}
-        </h2>
-
-        <p class="text-muted mb-0">
-            Quản lý nhiệm vụ và bài tập đã giao cho học viên
-        </p>
-
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body px-4 py-3">
+            <h2 class="fw-bold mb-1 text-primary">
+                <i class="bi bi-person-workspace me-2"></i>
+                Chào mừng, {{ current_user.name }}
+            </h2>
+            <p class="text-muted mb-0">
+                Quản lý nhiệm vụ và bài tập đã giao cho học viên
+            </p>
+        </div>
     </div>
-</div>
 
-
-    <!-- ACTION BAR -->
+    <!-- FILTER + SEARCH FORM -->
+    <form method="get">
     <div class="card border-0 shadow rounded-4 mb-4">
         <div class="card-body p-4">
             <div class="row g-3 align-items-center">
@@ -34,14 +31,22 @@
                             Chọn lớp
                         </span>
 
-                        <select class="form-select w-auto shadow-sm">
-                            <option>Lớp A</option>
-                            <option>Lớp B</option>
+                        <select name="course_id"
+                                class="form-select w-auto shadow-sm"
+                                onchange="this.form.submit()">
+                            <option value="">-- Tất cả lớp --</option>
+                            {% for c in courses %}
+                                <option value="{{ c.id }}"
+                                    {% if c.id == selected_course_id %}selected{% endif %}>
+                                    {{ c.name }}
+                                </option>
+                            {% endfor %}
                         </select>
 
                         <input type="date"
-                               class="form-control w-auto shadow-sm"
-                               value="2025-11-28">
+                               name="date"
+                               value="{{ date }}"
+                               class="form-control w-auto shadow-sm">
                     </div>
                 </div>
 
@@ -49,7 +54,8 @@
                 <div class="col-lg-6 col-md-12">
                     <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
 
-                        <button class="btn fw-semibold text-white shadow-sm"
+                        <button type="button"
+                                class="btn fw-semibold text-white shadow-sm"
                                 style="background:linear-gradient(135deg,#4f46e5,#06b6d4)">
                             <i class="bi bi-plus-circle me-1"></i>
                             Thêm nhiệm vụ
@@ -60,8 +66,11 @@
                                 <i class="bi bi-search text-primary"></i>
                             </span>
                             <input type="text"
+                                   name="kw"
+                                   value="{{ kw }}"
                                    class="form-control border-start-0"
-                                   placeholder="Tìm kiếm...">
+                                   placeholder="Tìm kiếm..."
+                                   onkeydown="if(event.key==='Enter') this.form.submit()">
                         </div>
 
                     </div>
@@ -70,6 +79,7 @@
             </div>
         </div>
     </div>
+    </form>
 
     <!-- TABLE -->
     <div class="card border-0 shadow rounded-4">
@@ -86,40 +96,31 @@
                 </thead>
 
                 <tbody>
+                {% if tasks %}
+                    {% for t in tasks %}
                     <tr>
-                        <td>1</td>
-                        <td>30/11/2025</td>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ t.deadline.strftime("%d/%m/%Y") }}</td>
                         <td class="text-start">
-                            Unit 1: Ngữ pháp cơ bản
+                            {{ t.title }}
                         </td>
                         <td>
-                            <button class="btn btn-outline-primary btn-sm">
+                            <a href="{{ url_for('teacher_task_detail', task_id=t.id) }}"
+                               class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i>
                                 Xem chi tiết
-                            </button>
+                            </a>
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>04/12/2025</td>
-                        <td class="text-start">
-                            Unit 3: Từ vựng chuyên ngành
-                        </td>
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i>
-                                Xem chi tiết
-                            </button>
-                        </td>
-                    </tr>
-
+                    {% endfor %}
+                {% else %}
                     <tr>
                         <td colspan="4" class="text-muted text-center py-4">
                             <i class="bi bi-info-circle me-1"></i>
-                            Chưa có thêm nhiệm vụ nào
+                            Không có nhiệm vụ phù hợp
                         </td>
                     </tr>
+                {% endif %}
                 </tbody>
             </table>
 

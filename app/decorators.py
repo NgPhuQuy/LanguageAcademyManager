@@ -41,6 +41,7 @@ def teacher_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.has_role("TEACHER"):
-            flash("ERROR!!!", "danger")
+            flash("Bạn không có quyền truy cập trang này!!!", "danger")
+            return redirect("/")
         return f(*args, **kwargs)
     return decorated_function

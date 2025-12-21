@@ -94,9 +94,9 @@ def process_course_payment(user, course):
         db.session.flush()
 
         scores = [
-            Score(score=0, rate=0.1, enrollment_id=enrollment.id),  # chuyên cần
-            Score(score=0, rate=0.3, enrollment_id=enrollment.id),  # giữa kỳ
-            Score(score=0, rate=0.6, enrollment_id=enrollment.id)  # cuối kỳ
+            Score(name="ATTENDANCE", score=0, rate=0.1, enrollment_id=enrollment.id),
+            Score(name="MIDTERM", score=0, rate=0.3, enrollment_id=enrollment.id),
+            Score(name="FINAL", score=0, rate=0.6, enrollment_id=enrollment.id)
         ]
         db.session.add_all(scores)
 
@@ -150,12 +150,14 @@ def get_students_by_course(course_id):
     students = (db.session.query(User).join(Enrollment, Enrollment.user_id == User.id)
                 .filter(Enrollment.course_id == course_id, Enrollment.status == True).order_by(User.name.asc()).all())
     return students
+
+
 def save_attendance(course_id, date, present_student_ids):
     enrollments = (db.session.query(Enrollment)
                    .filter(
-                       Enrollment.course_id == course_id,
-                       Enrollment.status == True
-                   ).all())
+        Enrollment.course_id == course_id,
+        Enrollment.status == True
+    ).all())
 
     for e in enrollments:
         attendance = Attendance.query.filter_by(
@@ -175,13 +177,25 @@ def save_attendance(course_id, date, present_student_ids):
     db.session.commit()
 
 
-
 def get_attendance_map(course_id, attend_date):
     rows = (db.session.query(Attendance)
             .join(Enrollment)
             .filter(
-                Enrollment.course_id == course_id,
-                Attendance.attend_date == attend_date
-            ).all())
+        Enrollment.course_id == course_id,
+        Attendance.attend_date == attend_date
+    ).all())
 
     return {a.enrollment.user_id: a.present for a in rows}
+
+
+def get_courses_by_teacher(teacher_id):
+    return Course.query.filter(
+        Course.teacher_id == teacher_id
+    ).all()
+
+
+def get_enrollments_by_course(course_id):
+    return Enrollment.query.join(User).filter(
+        Enrollment.course_id == course_id,
+        Enrollment.status == True
+    ).all()
