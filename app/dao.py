@@ -6,11 +6,14 @@ import hashlib
 def load_language():
     return Language.query.all()
 
+
 def load_level():
     return Level.query.all()
 
+
 def get_level(level_id):
     return Level.query.filter(Level.id.__eq__(level_id))
+
 
 def load_course(q=None, lang_id=None, page=None, level_id=None, price_min=0, price_max=5000000):
     query = Course.query.filter(Course.fee.between(price_min, price_max))
@@ -52,53 +55,65 @@ def get_user_by_id(user_id):
 
 
 def is_username_exist(username):
-    return db.session.query(User.id)\
-        .filter(User.username == username)\
+    return db.session.query(User.id) \
+        .filter(User.username == username) \
         .first() is not None
 
+
 def is_phone_used(phone):
-    return db.session.query(User.id)\
-        .filter(User.phone == phone)\
+    return db.session.query(User.id) \
+        .filter(User.phone == phone) \
         .first() is not None
+
 
 def count_course():
     return Course.query.count()
 
+
 def load_notifications(user_id):
     return Notification.query.filter(Notification.user_id.__eq__(user_id))
 
+
 def is_user_enrolled(user_id, course_id):
     return Enrollment.query.filter(
-        Enrollment.id_user == user_id,
-        Enrollment.id_course == course_id
+        Enrollment.user_id == user_id,
+        Enrollment.course_id == course_id
     ).first() is not None
 
+
 def process_course_payment(user, course):
-
     user.money -= course.fee
-
-    enrollment = Enrollment(
-        id_user=user.id,
-        id_course=course.id
-    )
+    enrollment = Enrollment(user=user, course=course)
     db.session.add(enrollment)
     db.session.commit()
-
     return True
+
 
 def count_course_students(course_id):
     return (db.session.query(Enrollment)
-        .filter(Enrollment.id_course == course_id)
-        .count()
-    )
+            .filter(Enrollment.course_id == course_id)
+            .count())
+
 
 def get_courses_by_user(user_id):
-    return ((Course.query.join(Enrollment, Enrollment.id_course == Course.id)
-            .filter(Enrollment.id_user == user_id))
+    return ((Course.query.join(Enrollment, Enrollment.course_id == Course.id)
+             .filter(Enrollment.user_id == user_id))
             .all())
 
-if __name__=="__main__":
+
+def count_user_enrollments(user_id):
+    return Enrollment.query.filter(
+        Enrollment.user_id == user_id,
+        Enrollment.status == True
+    ).count()
+
+
+def get_enrollment(user_id, course_id):
+    return Enrollment.query.filter(
+        Enrollment.user_id == user_id,
+        Enrollment.course_id == course_id).first()
+
+
+if __name__ == "__main__":
     with app.app_context():
         print(load_notifications(1))
-
-

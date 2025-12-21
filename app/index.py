@@ -1,8 +1,8 @@
 import math
 from flask import render_template, request, redirect, flash
 from app import app, dao, login, admin, db
-from app.dao import process_course_payment
-from app.decorators import anonymous_required, my_login_required
+from app.dao import process_course_payment, count_course, count_user_enrollments
+from app.decorators import anonymous_required, my_login_required, enrollment_required
 from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
 
@@ -20,11 +20,19 @@ def profile_user():
 
 @app.context_processor
 def common_attribute():
+    notifications = []
+    count_c = 0
+    if current_user.is_authenticated:
+        notifications = dao.load_notifications(current_user.id)
+        count_c = count_user_enrollments(current_user.id)
+
     return {
         "languages": dao.load_language(),
         "levels": dao.load_level(),
-        "notifications":dao.load_notifications(current_user.id)
+        "notifications": notifications,
+        "count_user_enroll":count_c
     }
+
 
 @app.route("/topup")
 @my_login_required
@@ -50,7 +58,7 @@ def my_courses(level_id=None, lang_id=None):
 
 @app.route("/courses/<int:course_id>")
 def course_details(course_id):
-    course = dao.get_course_by_id(course_id= course_id)
+    course = dao.get_course_by_id(course_id=course_id)
     return render_template("course-details.html", course=course)
 
 
@@ -132,7 +140,7 @@ def register_my_user():
                 res = cloudinary.uploader.upload(avatar)
                 file_path = res['secure_url']
             try:
-                login_user(dao.add_user(name=name, username=username, password=password, avatar=file_path,phone=phone))
+                login_user(dao.add_user(name=name, username=username, password=password, avatar=file_path, phone=phone))
                 return redirect('/')
             except:
                 db.session.rollback()
@@ -140,11 +148,11 @@ def register_my_user():
 
     return render_template("register.html", err_msg=err_msg)
 
+
 @app.route("/notifications")
 @my_login_required
 def notifications_page():
     return render_template("notifications.html")
-
 
 
 @app.route("/logout")
@@ -165,35 +173,36 @@ def student_page():
 
 
 @app.route("/my-courses/<int:course_id>")
-def user_course_detail(course_id):
-    course = dao.get_course_by_id(course_id=course_id)
-    return render_template("student_course_details.html", course=course)
+@my_login_required
+@enrollment_required
+def my_course_detail(course_id):
+    course = dao.get_course_by_id(course_id)
+    enrollment = dao.get_enrollment(user_id=current_user.id,course_id=course_id)
+    return render_template("student-course-details.html",course=course,enrollment=enrollment)
+
 
 @app.route("/my-courses")
 def user_course():
     courses = dao.get_courses_by_user(user_id=current_user.id)
     return render_template("student_course.html", courses=courses)
 
+
 @app.route("/courses/<int:course_id>/payment", methods=["GET", "POST"])
 @my_login_required
 def course_payment(course_id):
-
     course = dao.get_course_by_id(course_id=course_id)
     if not course:
         flash("Khóa học không tồn tại!", "danger")
         return redirect("/courses")
-
 
     current_students = dao.count_course_students(course_id)
     if current_students >= app.config["MAX_STUDENTS_PER_COURSE"]:
         flash("Lớp học đã đủ 25 học viên!!", "danger")
         return redirect("/courses")
 
-
     if dao.is_user_enrolled(current_user.id, course_id):
         flash("Bạn đã đăng ký khóa học này rồi!", "warning")
         return redirect("/my-courses/" + str(course_id))
-
 
     if request.method == "POST":
         if current_user.money < course.fee:
@@ -207,7 +216,6 @@ def course_payment(course_id):
 
     return render_template("payment.html", course=course, current_students=current_students,
                            max_students=app.config["MAX_STUDENTS_PER_COURSE"])
-
 
 
 @app.route("/teacher/assignments")

@@ -23,9 +23,9 @@
             <img src="{{ course.image }}" class="card-img-top">
             <div class="card-body">
                 <p><strong>Học phí:</strong> {{ "{:,.0f}".format(course.fee) }} VNĐ</p>
-                <p><strong>Ngày đăng ký:</strong> {{ course.created_date }}</p>
+                <p><strong>Ngày đăng ký:</strong> {{enrollment.day_assignment}}</p>
 
-                <span class="badge bg-success">Đã đăng ký</span>
+                <span class="badge bg-success">{{enrollment.status}}</span>
             </div>
         </div>
     </div>

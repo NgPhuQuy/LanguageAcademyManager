@@ -78,9 +78,10 @@ class Goal(db.Model):
 
 class Enrollment(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_user = Column(Integer, ForeignKey(User.id), nullable=False)
-    id_course = Column(Integer, ForeignKey(Course.id), nullable=False)
-    day_assignment = Column(DateTime, default=datetime.now())
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    course_id = Column(Integer, ForeignKey(Course.id), nullable=False)
+    status = Column(Boolean, default=True)
+    day_assignment = Column(DateTime, default=datetime.now)
     scores = relationship('Score', backref='enrollment', lazy=True)
 
 
