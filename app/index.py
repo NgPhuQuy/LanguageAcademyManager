@@ -1,8 +1,9 @@
 import math
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, flash
 from app import app, dao, login, admin, db
-from app.decorators import anonymous_required
-from flask_login import login_user, logout_user, current_user, login_required
+from app.dao import process_course_payment
+from app.decorators import anonymous_required, my_login_required
+from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
 
 
@@ -12,10 +13,9 @@ def index():
     return render_template("index.html", levels=levels)
 
 
-@app.route("/user/profile/<int:user_id>")
-def profile_user(user_id):
-    user = dao.get_user_by_id(user_id=user_id)
-    return render_template("profile.html", user=user)
+@app.route("/user/profile")
+def profile_user():
+    return render_template("profile.html")
 
 
 @app.context_processor
@@ -27,7 +27,7 @@ def common_attribute():
     }
 
 @app.route("/topup")
-@login_required
+@my_login_required
 def top_up_my_user():
     return render_template("topup.html")
 
@@ -141,7 +141,7 @@ def register_my_user():
     return render_template("register.html", err_msg=err_msg)
 
 @app.route("/notifications")
-@login_required
+@my_login_required
 def notifications_page():
     return render_template("notifications.html")
 
@@ -159,43 +159,83 @@ def get_user(user_id):
 
 
 @app.route("/student")
-@login_required
+@my_login_required
 def student_page():
     return render_template("student.html")
 
 
-@app.route("/student_courses")
-@login_required
-def student_courses():
-    return render_template("student_course.html")
+@app.route("/my-courses/<int:course_id>")
+def user_course_detail(course_id):
+    course = dao.get_course_by_id(course_id=course_id)
+    return render_template("student_course_details.html", course=course)
+
+@app.route("/my-courses")
+def user_course():
+    courses = dao.get_courses_by_user(user_id=current_user.id)
+    return render_template("student_course.html", courses=courses)
+
+@app.route("/courses/<int:course_id>/payment", methods=["GET", "POST"])
+@my_login_required
+def course_payment(course_id):
+
+    course = dao.get_course_by_id(course_id=course_id)
+    if not course:
+        flash("Khóa học không tồn tại!", "danger")
+        return redirect("/courses")
+
+
+    current_students = dao.count_course_students(course_id)
+    if current_students >= app.config["MAX_STUDENTS_PER_COURSE"]:
+        flash("Lớp học đã đủ 25 học viên!!", "danger")
+        return redirect("/courses")
+
+
+    if dao.is_user_enrolled(current_user.id, course_id):
+        flash("Bạn đã đăng ký khóa học này rồi!", "warning")
+        return redirect("/my-courses/" + str(course_id))
+
+
+    if request.method == "POST":
+        if current_user.money < course.fee:
+            flash("Số dư không đủ để thanh toán khóa học này", "danger")
+            return redirect("/courses/" + str(course_id) + "/payment")
+
+        process_course_payment(user=current_user, course=course)
+
+        flash("Thanh toán thành công !!!", "success")
+        return redirect("/my-courses/" + str(course_id))
+
+    return render_template("payment.html", course=course, current_students=current_students,
+                           max_students=app.config["MAX_STUDENTS_PER_COURSE"])
+
 
 
 @app.route("/teacher/assignments")
-@login_required
+@my_login_required
 def teacher_assignments():
     return render_template("teacher_assignments.html")
 
 
 @app.route("/teacher_attendance")
-@login_required
+@my_login_required
 def teacher_attendance():
     return render_template("teacher_attendance.html")
 
 
 @app.route("/teacher_grade_entry")
-@login_required
+@my_login_required
 def teacher_grade_entry():
     return render_template("teacher_grade_entry.html")
 
 
 @app.route("/statistics")
-@login_required
+@my_login_required
 def statistics_page():
     return render_template("statistics.html")
 
 
 @app.route("/invoices")
-@login_required
+@my_login_required
 def invoices_page():
     return render_template("invoices.html")
 
