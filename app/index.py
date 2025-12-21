@@ -7,6 +7,8 @@ from app.decorators import anonymous_required, my_login_required, enrollment_req
 from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
 
+from app.models import Task, Course
+
 
 @app.route("/")
 def index():
@@ -266,7 +268,18 @@ def course_payment(course_id):
 @app.route("/teacher/assignments")
 @my_login_required
 def teacher_assignments():
-    return render_template("teacher_assignments.html")
+    course_id = request.args.get("course_id")
+    courses = dao.get_courses_by_teacher(current_user.id)
+    assignments = dao.get_assignments_by_course_id(course_id)
+    return render_template("teacher_assignments.html", courses=courses, assignments=assignments)
+
+@app.route("/teacher/assignments/<int:task_id>")
+@my_login_required
+def task_details(task_id):
+    task = dao.get_task_by_id(task_id=task_id)
+    submissions = dao.get_submissions_by_task(task_id)
+
+    return render_template("task-details.html", task=task, submissions=submissions)
 
 
 @app.route("/teacher/attendance")
@@ -320,20 +333,50 @@ def save_teacher_attendance():
     return redirect(f"/teacher/attendance?course_id={course_id}&date={attend_date}")
 
 
-
-@app.route("/teacher/courses")
+@app.route("/teacher/courses", methods=["GET", "POST"])
 @my_login_required
 @teacher_required
 def teacher_grade_entry():
-    # 1. Lấy các khóa học giáo viên đang dạy
     courses = dao.get_courses_by_teacher(current_user.id)
 
-    # 2. Lấy course_id được chọn
     course_id = request.args.get("course_id")
+
+    if request.method == "POST":
+        course_id = request.form.get("course_id")
+        enrollments = dao.get_enrollments_by_course(course_id)
+
+        for e in enrollments:
+            # ====== CỘT CỐ ĐỊNH ======
+            for name in ["ATTENDANCE", "MIDTERM", "FINAL"]:
+                key = f"{name.lower()}_{e.id}"
+                value = request.form.get(key)
+
+                if value not in [None, ""]:
+                    dao.save_score(
+                        enrollment_id=e.id,
+                        name=name,
+                        score=float(value)
+                    )
+
+            # ====== CỘT ĐIỂM ĐỘNG ======
+            for form_key, value in request.form.items():
+                if form_key.startswith("extra_") and value not in ["", None]:
+                    _, idx, enrollment_id = form_key.split("_")
+
+                    if int(enrollment_id) == e.id:
+                        dao.save_score(
+                            enrollment_id=e.id,
+                            name=f"EXTRA_{idx}",
+                            score=float(value),
+                            rate=0.1  # hoặc tùy bạn
+                        )
+
+        flash("✅ Đã lưu toàn bộ bảng điểm", "success")
+
+    # ====== LOAD LẠI DATA ======
+    enrollments = []
     kw = request.args.get("kw")
 
-
-    enrollments = []
     if course_id:
         enrollments = dao.get_enrollments_by_course(course_id)
         if kw:
@@ -361,6 +404,30 @@ def statistics_page():
 @my_login_required
 def invoices_page():
     return render_template("invoices.html")
+
+
+@app.route("/teacher/assignments/create", methods=["GET", "POST"])
+@my_login_required
+def create_task():
+    course_id = request.args.get("course_id", type=int)
+
+    if request.method == "POST":
+        task = Task(
+            name=request.form.get("name"),
+            description=request.form.get("description"),
+            deadline=request.form.get("deadline"),
+            course_id=request.form.get("course_id")
+        )
+        db.session.add(task)
+        db.session.commit()
+        return redirect(f"/teacher/assignments?course_id={course_id}")
+
+    return render_template(
+        "teacher-assignment-create.html",
+        courses=Course.query.all(),
+        selected_course_id=course_id,
+        task=None
+    )
 
 
 if __name__ == "__main__":

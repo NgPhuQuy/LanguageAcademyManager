@@ -1,0 +1,47 @@
+{% extends "layout/base.html" %}
+{% block title %}Chi tiết nhiệm vụ{% endblock %}
+{% block content %}
+
+<div class="container my-5">
+
+    <div class="card shadow rounded-4 mb-4">
+        <div class="card-body">
+            <h3 class="fw-bold text-primary">{{ task.title }}</h3>
+            <p class="text-muted mb-1">
+                Hạn nộp: {{ task.deadline.strftime("%d/%m/%Y %H:%M") }}
+            </p>
+            <hr>
+            <p>{{ task.description }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow rounded-4">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">Nộp bài</h5>
+
+            <form method="post">
+                <textarea name="content"
+                          class="form-control mb-3"
+                          rows="6"
+                          placeholder="Nhập nội dung bài làm...">{{ submission.content if submission else "" }}</textarea>
+
+                <button class="btn btn-primary">
+                    {% if submission %}
+                        Cập nhật bài nộp
+                    {% else %}
+                        Nộp bài
+                    {% endif %}
+                </button>
+            </form>
+
+            {% if submission %}
+                <div class="alert alert-success mt-3">
+                    ✔ Bạn đã nộp bài
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
