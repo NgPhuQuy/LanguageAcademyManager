@@ -21,18 +21,34 @@
                 <div class="navbar-nav align-items-lg-center gap-3 mt-3 mt-lg-0">
 
                     <a href="/" class="mqd-nav-btn">Trang chủ</a>
-                    <a href="/courses" class="mqd-nav-btn">Khóa Học</a>
+                    <a href="/courses" class="mqd-nav-btn">Khóa học</a>
                     <a href="/contact" class="mqd-nav-btn">Liên hệ</a>
 
                     {% if current_user.is_authenticated %}
-                    <a href="/test" class="mqd-nav-btn">Thi thử</a>
-                    <a href="/user/profile" class="mqd-nav-btn">
-                        Trang cá nhân
-                    </a>
-                    <a href="/my-courses" class="mqd-nav-btn">Khóa học của tôi</a>
-                    <!-- 🔔 NOTIFICATION (BẮT BUỘC BỌC CHUNG) -->
-                    <div class="notification-wrapper ms-lg-2">
 
+                    {# ===== TEACHER ===== #}
+                    {% if current_user.has_role("TEACHER") %}
+                    <a href="/teacher/attendance" class="mqd-nav-btn">Điểm danh</a>
+                    <a href="/teacher/courses" class="mqd-nav-btn">Lớp giảng dạy</a>
+                    {% endif %}
+
+                    {# ===== CASHIER ===== #}
+                    {% if current_user.has_role("CASHIER") %}
+                    <a href="/cashier/payments" class="mqd-nav-btn">Thanh toán</a>
+                    <a href="/cashier/topup" class="mqd-nav-btn">Nạp tiền</a>
+                    <a href="/cashier/history" class="mqd-nav-btn">Lịch sử giao dịch</a>
+                    {% endif %}
+
+                    {# ===== STUDENT ===== #}
+                    {% if current_user.has_role("STUDENT") %}
+                    <a href="/my-courses" class="mqd-nav-btn">Khóa học của tôi</a>
+                    {% endif %}
+
+                    {# ===== CHUNG ===== #}
+                    <a href="/user/profile" class="mqd-nav-btn">Trang cá nhân</a>
+
+                    <!-- 🔔 NOTIFICATION -->
+                    <div class="notification-wrapper ms-lg-2">
                         <button class="notification-btn" id="notifyBtn" type="button">
                             🔔
                             <span class="notify-dot"></span>
@@ -51,23 +67,24 @@
                         </div>
                     </div>
 
-                    <!-- BOX SỐ DƯ -->
+                    {# ===== SỐ DƯ CHỈ CHO STUDENT ===== #}
+                    {% if current_user.has_role("STUDENT") %}
                     <div class="balance-box ms-lg-2">
                         <i class="bi bi-cash-coin"></i>
                         <span>{{ "{:,.0f}".format(current_user.money) }} VND</span>
                         <a href="/topup" class="topup-btn">+</a>
                     </div>
+                    {% endif %}
 
                     <a href="/logout" class="mqd-nav-btn mqd-logout-btn ms-lg-2">
                         Đăng Xuất
                     </a>
 
                     {% else %}
-
                     <a href="/login" class="mqd-nav-btn mqd-auth-btn">Đăng Nhập</a>
                     <a href="/register" class="mqd-nav-btn mqd-auth-btn">Đăng Ký</a>
-
                     {% endif %}
+
                 </div>
             </div>
         </div>

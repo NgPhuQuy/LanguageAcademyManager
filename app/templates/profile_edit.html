@@ -1,0 +1,84 @@
+{% extends "layout/base.html" %}
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4 text-center">
+                        ✏️ Chỉnh sửa hồ sơ
+                    </h4>
+
+                    <form method="post" enctype="multipart/form-data">
+
+                        <!-- AVATAR -->
+                        <div class="text-center mb-4">
+                            <img src="{{ current_user.avatar or '/static/img/default-avatar.png' }}"
+                                 class="rounded-circle mb-2"
+                                 width="110" height="110"
+                                 style="object-fit: cover">
+
+                            <div>
+                                <input type="file"
+                                       class="form-control form-control-sm"
+                                       name="avatar"
+                                       accept="image/*">
+                            </div>
+                        </div>
+
+                        <!-- NAME -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Họ và tên</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="name"
+                                   value="{{ current_user.name }}"
+                                   required>
+                        </div>
+
+                        <!-- USERNAME (READ ONLY) -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Username</label>
+                            <input type="text"
+                                   class="form-control bg-light"
+                                   value="{{ current_user.username }}"
+                                   disabled>
+                        </div>
+
+                        <!-- PHONE -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Số điện thoại</label>
+                            <input type="text"
+                                   class="form-control"
+                                   name="phone"
+                                   value="{{ current_user.phone }}"
+                                   required>
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email"
+                                   class="form-control bg-light"
+                                   value="{{ current_user.email }}"
+                                   disabled>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100 py-2 fw-semibold">
+                            💾 Lưu thay đổi
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

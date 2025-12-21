@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Course, Language, User, Level, Notification, Enrollment
+from app.models import Course, Language, User, Level, Notification, Enrollment, Role, UserRole, Score, Attendance
 import hashlib
 
 
@@ -42,9 +42,9 @@ def auth_user(username, password):
     return User.query.filter(User.username.__eq__(username), User.password.__eq__(password)).first()
 
 
-def add_user(name, username, password, avatar, phone):
+def add_user(name, username, password, avatar, phone, email):
     password = hashlib.md5(password.strip().encode('utf-8')).hexdigest()
-    u = User(name=name, username=username.strip(), password=password, avatar=avatar, phone=phone)
+    u = User(name=name, username=username.strip(), password=password, avatar=avatar, phone=phone, email=email)
     db.session.add(u)
     db.session.commit()
     return u
@@ -82,11 +82,31 @@ def is_user_enrolled(user_id, course_id):
 
 
 def process_course_payment(user, course):
-    user.money -= course.fee
-    enrollment = Enrollment(user=user, course=course)
-    db.session.add(enrollment)
-    db.session.commit()
-    return True
+    try:
+        user.money -= course.fee
+
+        enrollment = Enrollment(
+            user_id=user.id,
+            course_id=course.id,
+            status=True
+        )
+        db.session.add(enrollment)
+        db.session.flush()
+
+        scores = [
+            Score(score=0, rate=0.1, enrollment_id=enrollment.id),  # chuyên cần
+            Score(score=0, rate=0.3, enrollment_id=enrollment.id),  # giữa kỳ
+            Score(score=0, rate=0.6, enrollment_id=enrollment.id)  # cuối kỳ
+        ]
+        db.session.add_all(scores)
+
+        db.session.commit()
+        return True
+
+    except Exception as ex:
+        db.session.rollback()
+        print("PAYMENT ERROR:", ex)
+        return False
 
 
 def count_course_students(course_id):
@@ -101,13 +121,67 @@ def get_courses_by_user(user_id):
             .all())
 
 
-
 def get_enrollment(user_id, course_id):
     return Enrollment.query.filter(
         Enrollment.user_id == user_id,
         Enrollment.course_id == course_id).first()
 
 
-if __name__ == "__main__":
-    with app.app_context():
-        print(load_notifications(1))
+def is_email_used(email):
+    return (db.session.query(User.id).
+            filter(User.email == email).
+            first() is not None)
+
+
+def add_role_to_user(user_id, role_name):
+    role = db.session.query(Role).filter(Role.name == role_name).first()
+    if not role:
+        raise Exception("Role không tồn tại")
+
+    ur = UserRole(user_id=user_id, role_id=role.id)
+    db.session.add(ur)
+
+
+def get_classes_by_teacher(teacher_id):
+    return db.session.query(Course).filter(Course.teacher_id == teacher_id).all()
+
+
+def get_students_by_course(course_id):
+    students = (db.session.query(User).join(Enrollment, Enrollment.user_id == User.id)
+                .filter(Enrollment.course_id == course_id, Enrollment.status == True).order_by(User.name.asc()).all())
+    return students
+def save_attendance(course_id, date, present_student_ids):
+    enrollments = (db.session.query(Enrollment)
+                   .filter(
+                       Enrollment.course_id == course_id,
+                       Enrollment.status == True
+                   ).all())
+
+    for e in enrollments:
+        attendance = Attendance.query.filter_by(
+            enrollment_id=e.id,
+            attend_date=date
+        ).first()
+
+        if not attendance:
+            attendance = Attendance(
+                enrollment_id=e.id,
+                attend_date=date
+            )
+            db.session.add(attendance)
+
+        attendance.present = str(e.user_id) in present_student_ids
+
+    db.session.commit()
+
+
+
+def get_attendance_map(course_id, attend_date):
+    rows = (db.session.query(Attendance)
+            .join(Enrollment)
+            .filter(
+                Enrollment.course_id == course_id,
+                Attendance.attend_date == attend_date
+            ).all())
+
+    return {a.enrollment.user_id: a.present for a in rows}

@@ -1,13 +1,121 @@
 {% extends "layout/base.html" %}
+
 {% block content %}
+<div class="container mt-4">
 
-<div class="container py-4 page-content">
+    <!-- ===== PROFILE HEADER ===== -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body d-flex align-items-center">
 
-    <!-- WELCOME -->
-    <div class="mb-4">
-        <h2 class="fw-bold text-primary">
-            Chào mừng {{current_user.name}}
-        </h2>
+            <!-- Avatar -->
+            <img src="{{ current_user.avatar or url_for('static', filename='img/default-avatar.png') }}"
+                 class="rounded-circle border me-4"
+                 width="90" height="90">
+
+            <!-- Info -->
+            <div class="flex-grow-1">
+                <h4 class="mb-1">{{ current_user.name }}</h4>
+                <p class="mb-1 text-muted">{{ current_user.email }}</p>
+                <p class="mb-2 text-muted">{{ current_user.phone }}</p>
+
+                <!-- Roles -->
+                <div>
+                    {% for ur in current_user.user_role %}
+                        <span class="badge bg-primary me-1">
+                            {{ ur.role.name }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Action -->
+            <div>
+                <a href="/user/profile/edit" class="btn btn-outline-primary btn-sm">
+                    Chỉnh sửa
+                </a>
+            </div>
+
+        </div>
     </div>
+
+    <!-- ===== QUICK ACTIONS ===== -->
+    <div class="row g-3">
+
+        <!-- STUDENT -->
+        {% if current_user.has_role("STUDENT") %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">🎓 Học viên</h6>
+                    <p class="text-muted small">
+                        Quản lý khóa học và quá trình học tập
+                    </p>
+                    <a href="/my-courses" class="btn btn-sm btn-primary">
+                        Khóa học của tôi
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- TEACHER -->
+        {% if current_user.has_role("TEACHER") %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">👨‍🏫 Giảng viên</h6>
+                    <p class="text-muted small">
+                        Quản lý lớp học và điểm danh
+                    </p>
+                    <a href="/teacher/attendance" class="btn btn-sm btn-success">
+                        Điểm danh
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- CASHIER -->
+        {% if current_user.has_role("CASHIER") %}
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-title">💰 Thu ngân</h6>
+                    <p class="text-muted small">
+                        Quản lý thanh toán & hóa đơn
+                    </p>
+                    <a href="/cashier/bills" class="btn btn-sm btn-warning text-white">
+                        Hóa đơn
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <!-- ===== ACCOUNT INFO ===== -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-light">
+            <strong>Thông tin tài khoản</strong>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <strong>Trạng thái:</strong>
+                    {% if current_user.status %}
+                        <span class="text-success">Hoạt động</span>
+                    {% else %}
+                        <span class="text-danger">Bị khóa</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <strong>Số dư:</strong>
+                    {{ "{:,.0f}".format(current_user.money) }} VND
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
