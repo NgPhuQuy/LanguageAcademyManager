@@ -1,58 +1,84 @@
 {% extends "layout/base.html" %}
+
 {% block content %}
 
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-6">
+        <div class="col-lg-7 col-xl-6">
 
-            <div class="card shadow-sm border-0 rounded-4">
-                <div class="card-body p-4">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
 
-                    <h4 class="fw-bold mb-4 text-center">
-                        ✏️ Chỉnh sửa hồ sơ
-                    </h4>
+
+                <div class="text-center py-4"
+                    style="background: linear-gradient(135deg, #93c5fd, #60a5fa);">
+                    <div class="position-relative d-inline-block">
+                        <img src="{{ current_user.avatar or '/static/img/default-avatar.png' }}"
+                             class="rounded-circle border border-4 border-white shadow"
+                             width="120" height="120"
+                             style="object-fit: cover">
+                    </div>
+
+                    <h5 class="text-white fw-bold mt-3 mb-0">
+                        {{ current_user.name }}
+                    </h5>
+                    <small class="text-white-50">
+                        {{ current_user.username }}
+                    </small>
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body p-4 p-md-5">
+
+                    <h5 class="fw-bold mb-4 text-center">
+                        ✏️ Chỉnh sửa thông tin cá nhân
+                    </h5>
 
                     <form method="post" enctype="multipart/form-data">
 
                         <!-- AVATAR -->
-                        <div class="text-center mb-4">
-                            <img src="{{ current_user.avatar or '/static/img/default-avatar.png' }}"
-                                 class="rounded-circle mb-2"
-                                 width="110" height="110"
-                                 style="object-fit: cover">
-
-                            <div>
-                                <input type="file"
-                                       class="form-control form-control-sm"
-                                       name="avatar"
-                                       accept="image/*">
-                            </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Ảnh đại diện
+                            </label>
+                            <input type="file"
+                                   class="form-control"
+                                   name="avatar"
+                                   accept="image/*">
+                            <small class="text-muted">
+                                JPG, PNG — dung lượng tối đa 2MB
+                            </small>
                         </div>
 
-                        <!-- NAME -->
+                        <!-- FULL NAME -->
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Họ và tên</label>
+                            <label class="form-label fw-semibold">
+                                Họ và tên
+                            </label>
                             <input type="text"
-                                   class="form-control"
+                                   class="form-control form-control-lg"
                                    name="name"
                                    value="{{ current_user.name }}"
                                    required>
                         </div>
 
-                        <!-- USERNAME (READ ONLY) -->
+                        <!-- USERNAME -->
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Username</label>
+                            <label class="form-label fw-semibold">
+                                Username
+                            </label>
                             <input type="text"
-                                   class="form-control bg-light"
+                                   class="form-control form-control-lg bg-light"
                                    value="{{ current_user.username }}"
                                    disabled>
                         </div>
 
                         <!-- PHONE -->
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Số điện thoại</label>
+                            <label class="form-label fw-semibold">
+                                Số điện thoại
+                            </label>
                             <input type="text"
-                                   class="form-control"
+                                   class="form-control form-control-lg"
                                    name="phone"
                                    value="{{ current_user.phone }}"
                                    required>
@@ -60,17 +86,27 @@
 
                         <!-- EMAIL -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">Email</label>
+                            <label class="form-label fw-semibold">
+                                Email
+                            </label>
                             <input type="email"
-                                   class="form-control bg-light"
+                                   class="form-control form-control-lg bg-light"
                                    value="{{ current_user.email }}"
                                    disabled>
                         </div>
 
-                        <button type="submit"
-                                class="btn btn-primary w-100 py-2 fw-semibold">
-                            💾 Lưu thay đổi
-                        </button>
+                        <!-- ACTION -->
+                        <div class="d-grid gap-2">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg fw-semibold">
+                                💾 Lưu thay đổi
+                            </button>
+
+                            <a href="/user/profile/{{ current_user.id }}"
+                               class="btn btn-outline-secondary btn-lg">
+                                ← Quay lại hồ sơ
+                            </a>
+                        </div>
 
                     </form>
 
@@ -82,3 +118,4 @@
 </div>
 
 {% endblock %}
+
