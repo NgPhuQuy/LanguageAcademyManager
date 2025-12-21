@@ -1,6 +1,5 @@
 import math
 from datetime import date
-
 from flask import render_template, request, redirect, flash
 from app import app, dao, login, admin, db
 from app.dao import process_course_payment, count_course
@@ -322,10 +321,34 @@ def save_teacher_attendance():
 
 
 
-@app.route("/teacher_grade_entry")
+@app.route("/teacher/courses")
 @my_login_required
+@teacher_required
 def teacher_grade_entry():
-    return render_template("teacher_grade_entry.html")
+    # 1. Lấy các khóa học giáo viên đang dạy
+    courses = dao.get_courses_by_teacher(current_user.id)
+
+    # 2. Lấy course_id được chọn
+    course_id = request.args.get("course_id")
+    kw = request.args.get("kw")
+
+
+    enrollments = []
+    if course_id:
+        enrollments = dao.get_enrollments_by_course(course_id)
+        if kw:
+            enrollments = [
+                e for e in enrollments
+                if kw.lower() in e.user.name.lower()
+            ]
+
+    return render_template(
+        "teacher_grade_entry.html",
+        courses=courses,
+        enrollments=enrollments,
+        selected_course_id=course_id,
+        kw=kw
+    )
 
 
 @app.route("/statistics")

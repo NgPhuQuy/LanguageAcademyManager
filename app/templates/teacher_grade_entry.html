@@ -1,5 +1,5 @@
 {% extends "layout/base.html" %}
-
+{% block title %}Nhập điểm{% endblock %}
 {% block content %}
 
 <div class="container my-5 page-content">
@@ -31,51 +31,62 @@
     </div>
 
     <!-- CONTROL PANEL -->
-    <div class="card border-0 shadow rounded-4 mb-4"
-         style="background:#f8fafc">
+    <div class="card border-0 shadow rounded-4 mb-4" style="background:#f8fafc">
         <div class="card-body">
             <div class="row g-3">
 
                 <!-- CHỌN LỚP -->
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">
-                        Chọn lớp
-                    </label>
+                    <label class="form-label fw-semibold text-secondary">Chọn lớp</label>
 
                     <div class="dropdown">
                         <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center"
                                 data-bs-toggle="dropdown">
                             <span>
                                 <i class="bi bi-bookmark-fill me-2 text-primary"></i>
-                                <span id="selectedClassText">Chọn lớp...</span>
+                                <span id="selectedClassText">
+                                    {% if selected_course_id %}
+                                        {{ courses
+                                            | selectattr("id", "equalto", selected_course_id|int)
+                                            | first
+                                            | attr("name")
+                                        }}
+                                    {% else %}
+                                        Chọn lớp...
+                                    {% endif %}
+                                </span>
                             </span>
                             <i class="bi bi-chevron-down"></i>
                         </button>
 
                         <ul class="dropdown-menu w-100 shadow-sm border-0">
-                            <li><a class="dropdown-item">📘 Lớp A</a></li>
-                            <li><a class="dropdown-item">📗 Lớp B</a></li>
-                            <li><a class="dropdown-item">📙 Lớp C</a></li>
+                            {% for c in courses %}
+                            <li>
+                                <a class="dropdown-item" href="?course_id={{ c.id }}">
+                                    📘 {{ c.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
 
                 <!-- NGÀY -->
                 <div class="col-md-3">
-                    <label class="form-label fw-semibold text-secondary">
-                        Ngày
-                    </label>
-                    <input type="date" class="form-control" value="2025-11-28">
+                    <label class="form-label fw-semibold text-secondary">Ngày</label>
+                    <input type="date" class="form-control"
+                           value="{{ request.args.get('date', '') }}">
                 </div>
 
                 <!-- SEARCH -->
                 <div class="col-md-5">
-                    <label class="form-label fw-semibold text-secondary">
-                        Tìm kiếm học viên
-                    </label>
-                    <input type="text"
-                           class="form-control"
-                           placeholder="🔎 Nhập tên học viên...">
+                    <form method="get">
+                        <label class="form-label fw-semibold text-secondary">
+                            Tìm kiếm học viên
+                        </label>
+                        <input type="text" class="form-control"
+                               placeholder="🔎 Nhập tên học viên..." name="kw">
+                    </form>
                 </div>
 
             </div>
@@ -87,24 +98,89 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle text-center mb-0">
-                    <thead class="fw-semibold text-primary"
-                           style="background:#eef2ff">
-                        <tr>
-                            <th>STT</th>
-                            <th>Họ và Tên</th>
-                            <th>Chuyên cần</th>
-                            <th>Giữa kỳ</th>
-                            <th>Cuối kỳ</th>
-                            <th>Đạt</th>
-                        </tr>
+                    <thead class="fw-semibold text-primary" style="background:#eef2ff">
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ và Tên</th>
+                        <th>Chuyên cần</th>
+                        <th>Giữa kỳ</th>
+                        <th>Cuối kỳ</th>
+                        <th>Đạt</th>
+                    </tr>
                     </thead>
+
                     <tbody>
-                        <tr>
-                            <td colspan="6" class="text-muted py-4">
-                                Chưa có dữ liệu
-                            </td>
-                        </tr>
+                    {% if enrollments %}
+                    {% for e in enrollments %}
+
+                    {# --- TÁCH SCORE THEO NAME --- #}
+                    {% set attendance = None %}
+                    {% set midterm = None %}
+                    {% set final = None %}
+
+                    {% for sc in e.scores %}
+                    {% if sc.name == "ATTENDANCE" %}
+                    {% set attendance = sc %}
+                    {% elif sc.name == "MIDTERM" %}
+                    {% set midterm = sc %}
+                    {% elif sc.name == "FINAL" %}
+                    {% set final = sc %}
+                    {% endif %}
+                    {% endfor %}
+
+                    <tr>
+                        <td>{{ loop.index }}</td>
+
+                        <td class="text-start">
+                            {{ e.user.name }}
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.1"
+                                   name="attendance_{{ e.id }}"
+                                   value="{{ attendance.score if attendance else '' }}"
+                                   class="form-control form-control-sm text-center">
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.1"
+                                   name="midterm_{{ e.id }}"
+                                   value="{{ midterm.score if midterm else '' }}"
+                                   class="form-control form-control-sm text-center">
+                        </td>
+
+                        <td>
+                            <input type="number" step="0.1"
+                                   name="final_{{ e.id }}"
+                                   value="{{ final.score if final else '' }}"
+                                   class="form-control form-control-sm text-center">
+                        </td>
+
+                        {# --- TÍNH ĐIỂM TỔNG --- #}
+                        {% set total = 0 %}
+                        {% if attendance %}{% set total = total + attendance.score * attendance.rate %}{% endif %}
+                        {% if midterm %}{% set total = total + midterm.score * midterm.rate %}{% endif %}
+                        {% if final %}{% set total = total + final.score * final.rate %}{% endif %}
+
+                        <td>
+                            {% if total >= 5 %}
+                            <span class="badge bg-success">Đạt</span>
+                            {% else %}
+                            <span class="badge bg-danger">Chưa đạt</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-muted py-4">
+                            Chưa có dữ liệu
+                        </td>
+                    </tr>
+                    {% endif %}
                     </tbody>
+
                 </table>
             </div>
         </div>
