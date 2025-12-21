@@ -1,6 +1,7 @@
 from flask import redirect
 from flask_admin import Admin, AdminIndexView, expose, BaseView
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.theme import Bootstrap4Theme
 from flask_login import current_user, logout_user
 from sqlalchemy import func
 from app import app, db
@@ -152,7 +153,7 @@ class NotificationAdmin(MyAuthenticatedView):
     column_filters = ("is_read",)
 
 
-admin = Admin(app, name="Language Academy Manager", index_view=MyAdminIndexView())
+admin = Admin(app, name="Language Academy Manager", index_view=MyAdminIndexView(), theme=Bootstrap4Theme())
 
 admin.add_view(UserAdmin(User, db.session, name="Users"))
 admin.add_view(RoleAdmin(Role, db.session, name="Roles"))
