@@ -20,27 +20,29 @@ Tất cả thông báo
         <div class="list-group">
 
             {% for n in notifications %}
-            <div class="list-group-item list-group-item-action
+            <a href="/my-course?id=n.course_id" class="text-decoration-none text-reset">
+                <div class="list-group-item list-group-item-action
                         {% if not n.is_read %}list-group-item-primary{% endif %}">
 
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-1 fw-semibold">
-                        {{ n.title }}
-                    </h6>
-                    <small class="text-muted">
-                        {{ n.time }}
-                    </small>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1 fw-semibold">
+                            {{ n.name }}
+                        </h6>
+                        <small class="text-muted">
+                            {{ n.created_at }}
+                        </small>
+                    </div>
+
+                    <p class="mb-1 text-muted">
+                        {{ n.content }}
+                    </p>
+
+                    {% if not n.is_read %}
+                    <span class="badge bg-primary">Chưa đọc</span>
+                    {% endif %}
+
                 </div>
-
-                <p class="mb-1 text-muted">
-                    {{ n.content }}
-                </p>
-
-                {% if not n.is_read %}
-                <span class="badge bg-primary">Chưa đọc</span>
-                {% endif %}
-
-            </div>
+            </a>
             {% endfor %}
 
         </div>

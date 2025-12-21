@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Course, Language, User, Level
+from app.models import Course, Language, User, Level, Notification, Enrollment
 import hashlib
 
 
@@ -64,12 +64,41 @@ def is_phone_used(phone):
 def count_course():
     return Course.query.count()
 
+def load_notifications(user_id):
+    return Notification.query.filter(Notification.user_id.__eq__(user_id))
+
+def is_user_enrolled(user_id, course_id):
+    return Enrollment.query.filter(
+        Enrollment.id_user == user_id,
+        Enrollment.id_course == course_id
+    ).first() is not None
+
+def process_course_payment(user, course):
+
+    user.money -= course.fee
+
+    enrollment = Enrollment(
+        id_user=user.id,
+        id_course=course.id
+    )
+    db.session.add(enrollment)
+    db.session.commit()
+
+    return True
+
+def count_course_students(course_id):
+    return (db.session.query(Enrollment)
+        .filter(Enrollment.id_course == course_id)
+        .count()
+    )
+
+def get_courses_by_user(user_id):
+    return ((Course.query.join(Enrollment, Enrollment.id_course == Course.id)
+            .filter(Enrollment.id_user == user_id))
+            .all())
+
 if __name__=="__main__":
     with app.app_context():
-        print(count_course())
-
-        # for i in load_level():
-        #     print(i.)
-        # print(load_level())
+        print(load_notifications(1))
 
 

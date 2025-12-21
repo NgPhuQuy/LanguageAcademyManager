@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boo
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from app import db, app
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Base(db.Model):
@@ -20,13 +20,13 @@ class User(Base, UserMixin):
     avatar = Column(String(300))
     phone = Column(String(20), nullable=False, unique=True)
     status = Column(Boolean, default=True)
-    money = Column(Integer, default=0)
+    money = Column(Integer, default=1_000_000_000)
 
     enrollment = relationship('Enrollment', backref="user", lazy=True)
     user_role = relationship('UserRole', backref='user', lazy=True)
     bill = relationship('Bill', backref='user', lazy=True)
     teach = relationship('Course', backref='teacher', lazy=True)
-    notifications = db.relationship("Notification", backref="user", lazy=True)
+    notifications = relationship("Notification", backref="user", lazy=True)
 
     def has_role(self, role_name):
         return any(ur.role and ur.role.name == role_name
@@ -64,6 +64,7 @@ class Course(Base):
     teacher_id = Column(Integer, ForeignKey(User.id), nullable=False)
     level_id = Column(Integer, ForeignKey(Level.id), nullable=False)
 
+    notifications = relationship("Notification", backref="course", lazy=True)
     goals = relationship("Goal", backref="course", lazy=True)
     enrollment = relationship('Enrollment', backref='course', lazy=True)
 
@@ -92,14 +93,13 @@ class Score(Base):
 class Bill(Base):
     id_cashier = Column(Integer, ForeignKey(User.id), nullable=False)
 
-class Notification(db.Model):
-    id = Column(Integer, primary_key=True)
-    title = Column(String(255))
+class Notification(Base):
     content = Column(String(255))
     is_read = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now)
 
-    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user_id = Column(Integer, ForeignKey(User.id))
+    course_id = Column(Integer, ForeignKey(Course.id))
 
 # class Voucher(Base):
 #     discount = Column(Float, default=0.0)
@@ -517,4 +517,19 @@ if __name__ == "__main__":
         userr.user = userStudent
         userr.role = r1
         db.session.add_all([userr, userStudent])
+        db.session.commit()
+        import random
+
+        notifications = []
+
+        for i in range(1, 21):
+            noti = Notification(
+                name=f"Thông báo {i}",
+                content=f"Nội dung thông báo số {i}",
+                user_id=1,
+                course_id=random.randint(1, 3),
+                is_read=False
+            )
+            notifications.append(noti)
+        db.session.add_all(notifications)
         db.session.commit()
