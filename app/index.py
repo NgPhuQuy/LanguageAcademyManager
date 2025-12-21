@@ -1,7 +1,7 @@
 import math
 from flask import render_template, request, redirect, flash
 from app import app, dao, login, admin, db
-from app.dao import process_course_payment, count_course, count_user_enrollments
+from app.dao import process_course_payment, count_course
 from app.decorators import anonymous_required, my_login_required, enrollment_required
 from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
@@ -21,16 +21,13 @@ def profile_user():
 @app.context_processor
 def common_attribute():
     notifications = []
-    count_c = 0
     if current_user.is_authenticated:
         notifications = dao.load_notifications(current_user.id)
-        count_c = count_user_enrollments(current_user.id)
 
     return {
         "languages": dao.load_language(),
         "levels": dao.load_level(),
         "notifications": notifications,
-        "count_user_enroll":count_c
     }
 
 
@@ -47,7 +44,7 @@ def my_courses(level_id=None, lang_id=None):
     price_max = int(request.args.get("priceMax", 5_000_000))
     q = request.args.get("q")
     page = request.args.get("page", 1, type=int)
-    pages = math.ceil(dao.count_course() / app.config["PAGE_SIZE"])
+    pages = math.ceil(count_course() / app.config["PAGE_SIZE"])
     levels = dao.load_level()
     courses = dao.load_course(q=q, level_id=level_id, lang_id=lang_id,
                               price_max=price_max, price_min=price_min,

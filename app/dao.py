@@ -101,12 +101,6 @@ def get_courses_by_user(user_id):
             .all())
 
 
-def count_user_enrollments(user_id):
-    return Enrollment.query.filter(
-        Enrollment.user_id == user_id,
-        Enrollment.status == True
-    ).count()
-
 
 def get_enrollment(user_id, course_id):
     return Enrollment.query.filter(
