@@ -1,5 +1,6 @@
 from app import app, db
-from app.models import Course, Language, User, Level, Notification, Enrollment, Role, UserRole, Score, Attendance
+from app.models import Course, Language, User, Level, Notification, Enrollment, Role, UserRole, Score, Attendance, Task, \
+    Submission
 import hashlib
 
 
@@ -199,3 +200,57 @@ def get_enrollments_by_course(course_id):
         Enrollment.course_id == course_id,
         Enrollment.status == True
     ).all()
+
+def save_or_update_score(enrollment_id, name, score, rate):
+    if score in (None, ""):
+        return
+
+    sc = Score.query.filter_by(
+        enrollment_id=enrollment_id,
+        name=name
+    ).first()
+
+    if sc:
+        sc.score = float(score)
+    else:
+        sc = Score(
+            enrollment_id=enrollment_id,
+            name=name,
+            score=float(score),
+            rate=rate
+        )
+        db.session.add(sc)
+
+
+def save_score(enrollment_id, name, score, rate):
+    sc = Score.query.filter_by(
+        enrollment_id=enrollment_id,
+        name=name
+    ).first()
+
+    if sc:
+        sc.score = score
+        sc.rate = rate
+    else:
+        sc = Score(
+            enrollment_id=enrollment_id,
+            name=name,
+            score=score,
+            rate=rate
+        )
+        db.session.add(sc)
+
+    db.session.commit()
+
+
+def get_assignments_by_course_id(course_id):
+    return (Task.query.filter(Task.course_id == course_id).
+            order_by(Task.deadline.desc()).all())
+
+
+def get_task_by_id(task_id):
+    return Task.query.get(task_id)
+
+
+def get_submissions_by_task(task_id):
+    return Submission.query.filter_by(task_id=task_id).all()

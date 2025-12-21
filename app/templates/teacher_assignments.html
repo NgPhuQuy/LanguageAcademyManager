@@ -12,114 +12,123 @@
                 Chào mừng, {{ current_user.name }}
             </h2>
             <p class="text-muted mb-0">
-                Quản lý nhiệm vụ và bài tập đã giao cho học viên
+                Quản lý bài tập đã giao cho học viên
             </p>
         </div>
     </div>
 
-    <!-- FILTER + SEARCH FORM -->
-    <form method="get">
-    <div class="card border-0 shadow rounded-4 mb-4">
-        <div class="card-body p-4">
-            <div class="row g-3 align-items-center">
+    <!-- FILTER FORM -->
+    <form method="get" action="/teacher/assignments">
+        <div class="card border-0 shadow rounded-4 mb-4">
+            <div class="card-body p-4">
+                <div class="row g-3 align-items-end">
 
-                <!-- FILTER -->
-                <div class="col-lg-6 col-md-12">
-                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                    <!-- COURSE -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-secondary">Chọn lớp</label>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary w-100 d-flex justify-content-between align-items-center"
+                                    data-bs-toggle="dropdown">
+                            <span>
+                                {% if selected_course_id %}
+                                    {{ courses
+                                        | selectattr("id", "equalto", selected_course_id|int)
+                                        | first
+                                        | attr("name") }}
+                                {% else %}
+                                    Chọn lớp...
+                                {% endif %}
+                            </span>
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
 
-                        <span class="fw-semibold text-secondary">
-                            Chọn lớp
-                        </span>
+                            <ul class="dropdown-menu w-100">
+                                {% for c in courses %}
+                                <li>
+                                    <a class="dropdown-item"
+                                       href="/teacher/assignments?course_id={{ c.id }}">
+                                        {{ c.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
 
-                        <select name="course_id"
-                                class="form-select w-auto shadow-sm"
-                                onchange="this.form.submit()">
-                            <option value="">-- Tất cả lớp --</option>
-                            {% for c in courses %}
-                                <option value="{{ c.id }}"
-                                    {% if c.id == selected_course_id %}selected{% endif %}>
-                                    {{ c.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-
+                    <!-- DATE -->
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold text-secondary">
+                            Ngày
+                        </label>
                         <input type="date"
                                name="date"
-                               value="{{ date }}"
-                               class="form-control w-auto shadow-sm">
+                               value="{{ date or '' }}"
+                               class="form-control">
                     </div>
-                </div>
 
-                <!-- ACTIONS -->
-                <div class="col-lg-6 col-md-12">
-                    <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
-
-                        <button type="button"
-                                class="btn fw-semibold text-white shadow-sm"
-                                style="background:linear-gradient(135deg,#4f46e5,#06b6d4)">
-                            <i class="bi bi-plus-circle me-1"></i>
-                            Thêm nhiệm vụ
-                        </button>
-
-                        <div class="input-group w-auto shadow-sm">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search text-primary"></i>
-                            </span>
-                            <input type="text"
-                                   name="kw"
-                                   value="{{ kw }}"
-                                   class="form-control border-start-0"
-                                   placeholder="Tìm kiếm..."
-                                   onkeydown="if(event.key==='Enter') this.form.submit()">
-                        </div>
-
+                    <!-- SEARCH -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold text-secondary">
+                            Tìm kiếm
+                        </label>
+                        <input type="text"
+                               name="kw"
+                               value="{{ kw or '' }}"
+                               class="form-control"
+                               placeholder="Nhập tên bài tập"
+                               onkeydown="if(event.key==='Enter') this.form.submit()">
                     </div>
-                </div>
 
+                </div>
             </div>
         </div>
-    </div>
     </form>
 
     <!-- TABLE -->
     <div class="card border-0 shadow rounded-4">
         <div class="card-body p-4 table-responsive">
 
+            <div class="d-flex justify-content-end mb-3">
+                <a href="/teacher/assignments/create"
+                   class="btn fw-semibold text-white"
+                   style="background:linear-gradient(135deg,#4f46e5,#06b6d4)">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Thêm bài tập
+                </a>
+            </div>
+
             <table class="table table-hover align-middle text-center mb-0">
                 <thead style="background:#eef2ff">
-                    <tr class="fw-semibold text-primary">
-                        <th style="width:80px">STT</th>
-                        <th>Hạn nhiệm vụ</th>
-                        <th class="text-start">Nhiệm vụ đã giao</th>
-                        <th style="width:160px">Hành động</th>
-                    </tr>
+                <tr class="fw-semibold text-primary">
+                    <th style="width:80px">STT</th>
+                    <th>Hạn nộp</th>
+                    <th class="text-start">Bài tập</th>
+                    <th style="width:160px">Hành động</th>
+                </tr>
                 </thead>
 
                 <tbody>
-                {% if tasks %}
-                    {% for t in tasks %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ t.deadline.strftime("%d/%m/%Y") }}</td>
-                        <td class="text-start">
-                            {{ t.title }}
-                        </td>
-                        <td>
-                            <a href="{{ url_for('teacher_task_detail', task_id=t.id) }}"
-                               class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye me-1"></i>
-                                Xem chi tiết
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% if assignments %}
+                {% for a in assignments %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ a.deadline.strftime("%d/%m/%Y") }}</td>
+                    <td class="text-start">{{ a.title }}</td>
+                    <td>
+                        <a href="/teacher/assignments/{{ a.id }}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye me-1"></i>
+                            Xem
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
                 {% else %}
-                    <tr>
-                        <td colspan="4" class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Không có nhiệm vụ phù hợp
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="4" class="text-muted py-4">
+                        Không có bài tập phù hợp
+                    </td>
+                </tr>
                 {% endif %}
                 </tbody>
             </table>

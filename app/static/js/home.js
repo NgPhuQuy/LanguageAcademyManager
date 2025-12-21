@@ -200,39 +200,4 @@ syncRanges();document.addEventListener("DOMContentLoaded", () => {
         (matchLang && matchLevel) ? '' : 'none';
     });
   }
-
-//    /* ================= PAYMENT (FAKE) ================= */
-//const payBtn = document.getElementById("payBtn");
-//const payStatus = document.getElementById("payStatus");
-//
-//if (payBtn) {
-//    payBtn.addEventListener("click", () => {
-//
-//        const courseId = payBtn.dataset.courseId;
-//        const price = payBtn.dataset.coursePrice;
-//
-//        console.log("🔔 Thanh toán khóa học", courseId, price);
-//
-//        payBtn.disabled = true;
-//        payBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...`;
-//
-//        if (payStatus) {
-//            payStatus.className = "pay-loading";
-//            payStatus.innerHTML = "⏳ Hệ thống đang xác nhận thanh toán...";
-//            payStatus.classList.remove("d-none");
-//        }
-//
-//        setTimeout(() => {
-//            payBtn.innerHTML = `<i class="bi bi-check-circle me-2"></i>Đã thanh toán`;
-//            payBtn.classList.remove("btn-gradient");
-//            payBtn.classList.add("btn-secondary");
-//
-//            if (payStatus) {
-//                payStatus.className = "pay-success";
-//                payStatus.innerHTML = "✅ Thanh toán thành công! Chúc bạn học tốt 🎉";
-//            }
-//        }, 1500);
-//    });
-//}
-//
-//});
+});
