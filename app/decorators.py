@@ -11,7 +11,9 @@ def anonymous_required(f):
         if current_user.is_authenticated:
             return redirect('/')
         return f(*args, **kwargs)
+
     return decorated_func
+
 
 def my_login_required(f):
     @wraps(f)
@@ -19,8 +21,8 @@ def my_login_required(f):
         if not current_user.is_authenticated:
             return redirect('/login')
         return f(*args, **kwargs)
-    return decorated_func
 
+    return decorated_func
 
 
 def enrollment_required(f):
@@ -31,4 +33,14 @@ def enrollment_required(f):
             flash("Bạn chưa đăng ký khóa học này!", "danger")
             return redirect("/courses")
         return f(*args, **kwargs)
+
     return decorated_func
+
+
+def teacher_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.has_role("TEACHER"):
+            flash("ERROR!!!", "danger")
+        return f(*args, **kwargs)
+    return decorated_function

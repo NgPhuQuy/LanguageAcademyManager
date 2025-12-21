@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boolean, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Boolean, Text, Date
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from app import db, app
@@ -17,10 +17,11 @@ class Base(db.Model):
 class User(Base, UserMixin):
     username = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
-    avatar = Column(String(300))
+    avatar = Column(String(300), default="https://res.cloudinary.com/dtvg4cpoq/image/upload/v1766309306/nbkvoo9yacn0posek1ej.jpg")
     phone = Column(String(20), nullable=False, unique=True)
     status = Column(Boolean, default=True)
     money = Column(Integer, default=1_000_000_000)
+    email = Column(String(255),nullable=False, unique=True)
 
     enrollment = relationship('Enrollment', backref="user", lazy=True)
     user_role = relationship('UserRole', backref='user', lazy=True)
@@ -83,12 +84,20 @@ class Enrollment(db.Model):
     status = Column(Boolean, default=True)
     day_assignment = Column(DateTime, default=datetime.now)
     scores = relationship('Score', backref='enrollment', lazy=True)
+    attendance = relationship("Attendance", backref='enrollment', lazy=True)
 
 
 class Score(Base):
     score = Column(Float)
     rate = Column(Float, default=1.0)
     enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
+
+class Attendance(db.Model):
+    id = Column(Integer, primary_key=True)
+    enrollment_id = Column(Integer, ForeignKey(Enrollment.id), nullable=False)
+    attend_date = Column(Date, default=datetime.date)
+    present = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.now)
 
 
 class Bill(Base):
@@ -117,13 +126,33 @@ if __name__ == "__main__":
 
         password = hashlib.md5("123".encode("utf-8")).hexdigest()
 
-        u = User(name="admin", username="admin", password=hashlib.md5("admin".encode("utf-8")).hexdigest(), phone="0909123453")
-        u1 = User(name="Phạm Thành Đạt", username="dat123", password=password, phone="0123456789")
-        u2 = User(name="Alex", username="alex", password=password, phone="1234567888")
+        u = User(
+            name="admin",
+            username="admin",
+            password=hashlib.md5("admin".encode()).hexdigest(),
+            phone="0909123453",
+            email="admin@gmail.com"
+        )
+
+        u1 = User(
+            name="Phạm Thành Đạt",
+            username="dat123",
+            password=password,
+            phone="0123456789",
+            email="dat123@gmail.com"
+        )
+
+        u2 = User(
+            name="Alex",
+            username="alex",
+            password=password,
+            phone="1234567888",
+            email="alex@gmail.com"
+        )
+
         #
         r = Role(name="ADMIN", description="ADMIN")
         r1 = Role(name="STUDENT", description="Hoc vien")
-        r2 = Role(name="NV", description="NV bao ve")
         r3 = Role(name="TEACHER", description="giao vien")
         r4 = Role(name="CASHIER", description="THU NGÂN")
 
@@ -135,10 +164,6 @@ if __name__ == "__main__":
         ur1.user = u1
         ur1.role = r1
 
-        ur2 = UserRole()
-        ur2.user = u1
-        ur2.role = r2
-
         ur3 = UserRole()
         ur3.user = u2
         ur3.role = r3
@@ -147,7 +172,7 @@ if __name__ == "__main__":
         ur4.user = u1
         ur4.role = r4
 
-        db.session.add_all([r, r1, r2, r3, r4, u, u1, ur, ur1, ur2, ur3, ur4])
+        db.session.add_all([r, r1, r3, r4, u, u1, ur, ur1, ur3, ur4])
         db.session.commit()
 
         lang = Language(name="English")
@@ -511,8 +536,13 @@ if __name__ == "__main__":
         ])
         db.session.commit()
 
-
-        userStudent = User(name="Phạm Thành Đạt", username="student", password=password, phone="0123256789")
+        userStudent = User(
+            name="Phạm Thành Đạt",
+            username="student",
+            password=password,
+            phone="0123256789",
+            email="student@gmail.com"
+        )
 
         userr = UserRole()
         userr.user = userStudent

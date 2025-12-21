@@ -38,9 +38,9 @@
 
                     <div class="mt-4">
                         <img
-                            src="https://tuyensinhdonga.edu.vn/wp-content/uploads/2021/06/ky-nang-hoc-ngoai-ngu.jpg"
-                            class="img-fluid rounded-3 shadow-sm"
-                            alt="English Learning">
+                                src="https://tuyensinhdonga.edu.vn/wp-content/uploads/2021/06/ky-nang-hoc-ngoai-ngu.jpg"
+                                class="img-fluid rounded-3 shadow-sm"
+                                alt="English Learning">
                     </div>
                 </div>
 
@@ -52,41 +52,59 @@
 
                     <form method="post">
 
-                        {%if err_msg%}
-                        <div class="mb-3">
-                            <span class="color: #b91c1c">{{err_msg}}</span>
-                        </div>
-                        {%endif%}
-
                         <div class="mb-3">
                             <input type="text"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="Họ và tên" name="name" required="required"
+                                   placeholder="Họ và tên"
+                                   name="name"
+                                   required
                                    title="Không được bỏ trống!">
                         </div>
 
                         <div class="mb-3">
                             <input type="text"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="Tài khoản" name="username" required="required">
+                                   placeholder="Tài khoản"
+                                   name="username"
+                                   required>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="email"
+                                   class="form-control form-control-lg rounded-3"
+                                   placeholder="Email"
+                                   name="email"
+                                   required
+                                   pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                                   title="Vui lòng nhập email hợp lệ">
                         </div>
 
                         <div class="mb-3">
                             <input type="text"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="Số điện thoại" name="phone" required="required">
+                                   placeholder="Số điện thoại"
+                                   name="phone"
+                                   required
+                                   pattern="^0[0-9]{9}$"
+                                   title="Số điện thoại phải đủ 10 chữ số">
                         </div>
 
                         <div class="mb-3">
                             <input type="password"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="Mật khẩu" name="password" required="required">
+                                   placeholder="Mật khẩu"
+                                   name="password"
+                                   required
+                                   minlength="8"
+                                   title="Mật khẩu tối thiểu 8 ký tự">
                         </div>
 
                         <div class="mb-4">
                             <input type="password"
                                    class="form-control form-control-lg rounded-3"
-                                   placeholder="Nhập lại mật khẩu" name="confirm">
+                                   placeholder="Nhập lại mật khẩu"
+                                   name="confirm"
+                                   required>
                         </div>
 
                         <button type="submit"
@@ -103,6 +121,7 @@
                         </p>
 
                     </form>
+
                 </div>
 
             </div>
