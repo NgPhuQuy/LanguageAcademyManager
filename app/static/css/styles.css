@@ -732,7 +732,8 @@ font-size: 14px;
     max-width: 90vw;
 
     z-index: 1050;
-    display: block;
+    /*display: block;*/
+     /*pointer-events: none;*/
 
     /* Ẩn mặc định */
     opacity: 0;
@@ -746,7 +747,12 @@ font-size: 14px;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
 }
+.filter-wrapper {
+    position: relative;
+}
+
 
 /* ================= PAYMENT UI ================= */
 
@@ -819,4 +825,214 @@ font-size: 14px;
 
 .back-link-soft:hover i {
     transform: translateX(-4px);
+}
+
+/* =======================
+   GLOBAL SOFT THEME
+   ======================= */
+:root {
+    --primary-soft: #eef2ff;
+    --primary-main: #4f46e5;
+    --primary-light: #6366f1;
+    --text-dark: #1f2937;
+    --text-muted-soft: #6b7280;
+}
+
+/* =======================
+   PROFILE HERO
+   ======================= */
+.profile-hero {
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    border-radius: 2rem;
+}
+
+.profile-avatar-ring {
+    background: linear-gradient(135deg, #6366f1, #38bdf8);
+    padding: 4px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* =======================
+   ICON BOX (ROLE CARDS)
+   ======================= */
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* =======================
+   HOVER EFFECT CARD
+   ======================= */
+.hover-shadow {
+    transition: all 0.25s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* =======================
+   ROLE BADGE (CUSTOM)
+   ======================= */
+.badge-role {
+    background: var(--primary-soft);
+    color: #3730a3;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+}
+
+/* =======================
+   BUTTON UPGRADE
+   ======================= */
+.btn-soft-primary {
+    background: var(--primary-main);
+    color: #fff;
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-soft-primary:hover {
+    background: var(--primary-light);
+    box-shadow: 0 10px 22px rgba(79, 70, 229, 0.35);
+    transform: translateY(-1px);
+}
+
+/* =======================
+   ACCOUNT INFO BLOCK
+   ======================= */
+.account-info {
+    background: #ffffff;
+    border-radius: 1.5rem;
+}
+
+.account-info .label {
+    font-size: 0.85rem;
+    color: var(--text-muted-soft);
+}
+
+.account-info .value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+/* =======================
+   RESPONSIVE POLISH
+   ======================= */
+@media (max-width: 768px) {
+    .profile-hero {
+        text-align: center;
+    }
+
+    .profile-hero .d-flex {
+        flex-direction: column;
+    }
+}
+/* =======================
+   ACCOUNT STATUS PILL
+   ======================= */
+.account-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* ACTIVE */
+.account-status.active {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.account-status.active::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+/* LOCKED */
+.account-status.locked {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.account-status.locked::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+/* =======================
+   USER ROLE – PREMIUM SYSTEM STYLE
+   ======================= */
+.user-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 5px 14px;
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    background: #f8fafc;
+    color: #475569;
+
+    border: 1px solid #e2e8f0;
+    transition: all 0.25s ease;
+}
+
+/* Hover nhẹ – không phô */
+.user-role:hover {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+}
+
+/* ADMIN – SYSTEM LEVEL (KHÔNG LỒI) */
+.user-role.admin {
+    background: linear-gradient(135deg, #f8fafc, #eef2ff);
+    color: #3730a3;
+    border: 1px dashed #c7d2fe;
+}
+
+/* STUDENT */
+.user-role.student {
+    background: #eff6ff;
+    color: #1e40af;
+}
+
+/* TEACHER */
+.user-role.teacher {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+/* CASHIER */
+.user-role.cashier {
+    background: #fff7ed;
+    color: #9a3412;
 }

@@ -1,56 +1,77 @@
 {% extends "layout/base.html" %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container my-5" style="max-width:1200px;">
 
-    <!-- ===== PROFILE HEADER ===== -->
-    <div class="card shadow-sm mb-4">
-        <div class="card-body d-flex align-items-center">
+    <!-- ================= HERO PROFILE ================= -->
+    <div class="card border-0 shadow-lg rounded-5 mb-5 overflow-hidden">
 
-            <!-- Avatar -->
-            <img src="{{ current_user.avatar or url_for('static', filename='img/default-avatar.png') }}"
-                 class="rounded-circle border me-4"
-                 width="90" height="90">
+        <div class="p-5"
+             style="background: linear-gradient(135deg, #e0e7ff, #f8fafc);">
 
-            <!-- Info -->
-            <div class="flex-grow-1">
-                <h4 class="mb-1">{{ current_user.name }}</h4>
-                <p class="mb-1 text-muted">{{ current_user.email }}</p>
-                <p class="mb-2 text-muted">{{ current_user.phone }}</p>
+            <div class="d-flex align-items-center flex-wrap gap-4">
 
-                <!-- Roles -->
-                <div>
-                    {% for ur in current_user.user_role %}
-                        <span class="badge bg-primary me-1">
-                            {{ ur.role.name }}
-                        </span>
-                    {% endfor %}
+                <!-- Avatar -->
+                <div class="position-relative">
+                    <div class="rounded-circle p-1"
+                         style="background: linear-gradient(135deg,#6366f1,#38bdf8);">
+                        <img src="{{ current_user.avatar or url_for('static', filename='img/default-avatar.png') }}"
+                             class="rounded-circle bg-white"
+                             width="120" height="120"
+                             style="object-fit: cover">
+                    </div>
                 </div>
-            </div>
 
-            <!-- Action -->
-            <div>
-                <a href="/user/profile/edit" class="btn btn-outline-primary btn-sm">
-                    Chỉnh sửa
-                </a>
-            </div>
+                <!-- Info -->
+                <div class="flex-grow-1">
+                    <h2 class="fw-bold mb-1 text-dark">
+                        {{ current_user.name }}
+                    </h2>
 
+                    <div class="text-muted mb-2">
+                        {{ current_user.email }} · {{ current_user.phone }}
+                    </div>
+
+                    <!-- Roles -->
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+    {% for ur in current_user.user_role %}
+    <span class="user-role {{ ur.role.name | lower }} me-1">
+        {{ ur.role.name }}
+    </span>
+    {% endfor %}
+</div>
+
+                </div>
+
+                <!-- Action -->
+                <div>
+                    <a href="/user/profile/edit"
+                       class="btn btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm">
+                        ✨ Chỉnh sửa hồ sơ
+                    </a>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <!-- ===== QUICK ACTIONS ===== -->
-    <div class="row g-3">
+    <!-- ================= QUICK ACCESS ================= -->
+    <div class="row g-4 mb-5">
 
-        <!-- STUDENT -->
         {% if current_user.has_role("STUDENT") %}
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title">🎓 Học viên</h6>
-                    <p class="text-muted small">
-                        Quản lý khóa học và quá trình học tập
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"
+                         style="background:#eef2ff;color:#4f46e5;">
+                        🎓
+                    </div>
+                    <h6 class="fw-bold">Học viên</h6>
+                    <p class="text-muted small mb-4">
+                        Theo dõi khóa học và tiến độ học tập
                     </p>
-                    <a href="/my-courses" class="btn btn-sm btn-primary">
+                    <a href="/my-courses"
+                       class="btn btn-outline-primary btn-sm rounded-pill px-4">
                         Khóa học của tôi
                     </a>
                 </div>
@@ -58,16 +79,20 @@
         </div>
         {% endif %}
 
-        <!-- TEACHER -->
         {% if current_user.has_role("TEACHER") %}
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title">👨‍🏫 Giảng viên</h6>
-                    <p class="text-muted small">
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"
+                         style="background:#ecfeff;color:#0284c7;">
+                        👨‍🏫
+                    </div>
+                    <h6 class="fw-bold">Giảng viên</h6>
+                    <p class="text-muted small mb-4">
                         Quản lý lớp học và điểm danh
                     </p>
-                    <a href="/teacher/attendance" class="btn btn-sm btn-success">
+                    <a href="/teacher/attendance"
+                       class="btn btn-outline-success btn-sm rounded-pill px-4">
                         Điểm danh
                     </a>
                 </div>
@@ -75,47 +100,53 @@
         </div>
         {% endif %}
 
-        <!-- CASHIER -->
         {% if current_user.has_role("CASHIER") %}
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title">💰 Thu ngân</h6>
-                    <p class="text-muted small">
-                        Quản lý thanh toán & hóa đơn
+            <div class="card border-0 shadow-sm rounded-4 h-100 hover-shadow">
+                <div class="card-body p-4">
+                    <div class="icon-box mb-3"
+                         style="background:#fff7ed;color:#f97316;">
+                        💰
+                    </div>
+                    <h6 class="fw-bold">Thu ngân</h6>
+                    <p class="text-muted small mb-4">
+                        Quản lý hóa đơn & thanh toán
                     </p>
-                    <a href="/cashier/bills" class="btn btn-sm btn-warning text-white">
+                    <a href="/cashier/bills"
+                       class="btn btn-outline-warning btn-sm rounded-pill px-4">
                         Hóa đơn
                     </a>
                 </div>
             </div>
         </div>
         {% endif %}
-
     </div>
 
-    <!-- ===== ACCOUNT INFO ===== -->
-    <div class="card shadow-sm mt-4">
-        <div class="card-header bg-light">
-            <strong>Thông tin tài khoản</strong>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <strong>Trạng thái:</strong>
+    <!-- ================= ACCOUNT STATUS ================= -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <div class="row text-center">
+
+                <div class="col-md-6 mb-3">
+                    <div class="text-muted small">Trạng thái tài khoản</div>
                     {% if current_user.status %}
-                        <span class="text-success">Hoạt động</span>
+                        <div class="fw-bold text-success fs-5">Hoạt động</div>
                     {% else %}
-                        <span class="text-danger">Bị khóa</span>
+                        <div class="fw-bold text-danger fs-5">Bị khóa</div>
                     {% endif %}
                 </div>
-                <div class="col-md-6 mb-2">
-                    <strong>Số dư:</strong>
-                    {{ "{:,.0f}".format(current_user.money) }} VND
+
+                <div class="col-md-6 mb-3">
+                    <div class="text-muted small">Số dư hiện tại</div>
+                    <div class="fw-bold fs-5">
+                        {{ "{:,.0f}".format(current_user.money) }} VND
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
 
 </div>
+
 {% endblock %}

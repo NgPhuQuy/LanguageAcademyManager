@@ -165,7 +165,8 @@ minRange.addEventListener('input', syncRanges);
 maxRange.addEventListener('input', syncRanges);
 
 /* Init */
-syncRanges();document.addEventListener("DOMContentLoaded", () => {
+syncRanges();
+document.addEventListener("DOMContentLoaded", () => {
 
   const filterCheckboxes = document.querySelectorAll(
     '.filter-language, .filter-level'
