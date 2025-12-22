@@ -152,7 +152,7 @@ class Submission(Base):
     student_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     content = db.Column(db.Text)
     file_url = db.Column(db.String(255))
-    submitted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    submitted_at = db.Column(db.DateTime, default=datetime.now)
     task = db.relationship("Task", backref="submissions")
     student = db.relationship("User")
 

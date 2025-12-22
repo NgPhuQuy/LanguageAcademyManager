@@ -16,6 +16,52 @@
             </li>
             {% endfor %}
         </ul>
+        <h5>Bài tập đã giao</h5>
+        <ul class="list-group">
+            {% for assignment in assignments %}
+            <li class="list-group-item assignment-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="fw-bold mb-1">
+                            {{ assignment.title }}
+                        </h6>
+
+                        <p class="small text-muted mb-1">
+                            ⏰ Hạn nộp: {{ assignment.deadline }}
+                        </p>
+
+                        {% if assignment.submissions
+                        |selectattr("student_id", "equalto", current_user.id)
+                        |list %}
+                        <span class="badge bg-success">Đã nộp</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">Chưa nộp</span>
+                        {% endif %}
+                    </div>
+
+                    <form method="post"
+                          action="/assignments/{{ assignment.id }}/submit"
+                          enctype="multipart/form-data">
+
+                <textarea name="content"
+                          class="form-control mb-3"
+                          rows="4"
+                          placeholder="Nhập lời giải / ghi chú bài làm..."></textarea>
+
+                        <input type="file"
+                               name="submission"
+                               class="form-control mb-3">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            📤 Nộp bài
+                        </button>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
     </div>
 
     <div class="col-md-4">

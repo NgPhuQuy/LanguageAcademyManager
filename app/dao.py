@@ -254,3 +254,8 @@ def get_task_by_id(task_id):
 
 def get_submissions_by_task(task_id):
     return Submission.query.filter_by(task_id=task_id).all()
+
+def add_submit_assign(sub):
+    db.session.add(sub)
+    db.session.commit()
+    return sub
