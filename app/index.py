@@ -1,13 +1,16 @@
 import math
 from datetime import date
+
+from cloudinary.api import resource_types
 from flask import render_template, request, redirect, flash
+from werkzeug.utils import secure_filename
+
 from app import app, dao, login, admin, db
-from app.dao import process_course_payment, count_course
+from app.dao import process_course_payment, count_course, add_submit_assign
 from app.decorators import anonymous_required, my_login_required, enrollment_required, teacher_required
 from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
-
-from app.models import Task, Course
+from app.models import Task, Course, Submission
 
 
 @app.route("/")
@@ -225,7 +228,9 @@ def get_user(user_id):
 def my_course_detail(course_id):
     course = dao.get_course_by_id(course_id)
     enrollment = dao.get_enrollment(user_id=current_user.id, course_id=course_id)
-    return render_template("student-course-details.html", course=course, enrollment=enrollment)
+    assignments = dao.get_assignments_by_course_id(course_id=course_id)
+    return render_template("student-course-details.html", course=course,
+                           enrollment=enrollment, assignments=assignments)
 
 
 @app.route("/my-courses")
@@ -273,6 +278,7 @@ def teacher_assignments():
     assignments = dao.get_assignments_by_course_id(course_id)
     return render_template("teacher_assignments.html", courses=courses, assignments=assignments)
 
+
 @app.route("/teacher/assignments/<int:task_id>")
 @my_login_required
 def task_details(task_id):
@@ -280,6 +286,25 @@ def task_details(task_id):
     submissions = dao.get_submissions_by_task(task_id)
 
     return render_template("task-details.html", task=task, submissions=submissions)
+
+
+@app.route('/assignments/<int:id>/submit', methods=['POST'])
+@my_login_required
+def submit_assignment(id):
+    file = request.files.get('submission')
+    content = request.form.get("content")
+
+    if not (file or content):
+        flash("Nội dung và file đang rỗng, không thể gửi!!", "danger")
+        return redirect(f"/my-courses/{id}")
+
+    res = cloudinary.uploader.upload(file, folder="submissions", resource_type="raw")
+
+    sub = Submission(content=content, file_url=res["secure_url"],task_id=id, student_id=current_user.id)
+    add_submit_assign(sub=sub)
+
+    flash("Nộp bài thành công", "success")
+    return redirect(f"/my-courses/{id}")
 
 
 @app.route("/teacher/attendance")
