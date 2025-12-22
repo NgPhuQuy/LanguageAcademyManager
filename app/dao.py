@@ -100,10 +100,9 @@ def process_course_payment(user, course):
             Score(name="FINAL", score=0, rate=0.6, enrollment_id=enrollment.id)
         ]
         db.session.add_all(scores)
-        bill = Bill(enrollment_id=enrollment.id, status=True)
-        db.session.add(bill)
+
         db.session.commit()
-        return True
+        return enrollment
 
     except Exception as ex:
         db.session.rollback()
@@ -264,3 +263,10 @@ def add_submit_assign(sub):
 
 def load_bills():
     return Bill.query.all()
+
+
+def my_create_bill(enrollment):
+    bill = Bill(enrollment_id=enrollment.id, status=True)
+    db.session.add(bill)
+    db.session.commit()
+    return bill

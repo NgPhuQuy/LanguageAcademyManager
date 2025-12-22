@@ -261,7 +261,8 @@ def course_payment(course_id):
             flash("Số dư không đủ để thanh toán khóa học này", "danger")
             return redirect("/courses/" + str(course_id) + "/payment")
 
-        process_course_payment(user=current_user, course=course)
+
+        dao.my_create_bill(process_course_payment(user=current_user, course=course))
 
         flash("Thanh toán thành công !!!", "success")
         return redirect("/my-courses/" + str(course_id))

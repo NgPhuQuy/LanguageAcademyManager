@@ -130,9 +130,9 @@ class Attendance(db.Model):
 
 
 class Bill(Base):
-    id_enroll = Column(Integer, ForeignKey(Enrollment.id))
+    enrollment_id = Column(Integer, ForeignKey(Enrollment.id))
     status = Column(Boolean, default=False)
-    id_cashier = Column(Integer, ForeignKey(User.id), nullable=False)
+    cashier_id = Column(Integer, ForeignKey(User.id), nullable=False, default=2)
 
 
 class Notification(Base):
