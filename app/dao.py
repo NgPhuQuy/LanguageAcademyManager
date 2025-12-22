@@ -1,6 +1,6 @@
 from app import app, db
 from app.models import Course, Language, User, Level, Notification, Enrollment, Role, UserRole, Score, Attendance, Task, \
-    Submission
+    Submission, Bill
 import hashlib
 
 
@@ -100,7 +100,8 @@ def process_course_payment(user, course):
             Score(name="FINAL", score=0, rate=0.6, enrollment_id=enrollment.id)
         ]
         db.session.add_all(scores)
-
+        bill = Bill(enrollment_id=enrollment.id, status=True)
+        db.session.add(bill)
         db.session.commit()
         return True
 
@@ -259,3 +260,7 @@ def add_submit_assign(sub):
     db.session.add(sub)
     db.session.commit()
     return sub
+
+
+def load_bills():
+    return Bill.query.all()

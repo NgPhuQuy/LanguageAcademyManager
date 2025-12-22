@@ -35,9 +35,7 @@
 
                     {# ===== CASHIER ===== #}
                     {% if current_user.has_role("CASHIER") %}
-                    <a href="/cashier/payments" class="mqd-nav-btn">Thanh toán</a>
-                    <a href="/cashier/topup" class="mqd-nav-btn">Nạp tiền</a>
-                    <a href="/cashier/history" class="mqd-nav-btn">Lịch sử giao dịch</a>
+                    <a href="/cashier/invoices" class="mqd-nav-btn">Quản lí hóa đơn</a>
                     {% endif %}
 
                     {# ===== STUDENT ===== #}

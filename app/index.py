@@ -10,7 +10,7 @@ from app.dao import process_course_payment, count_course, add_submit_assign
 from app.decorators import anonymous_required, my_login_required, enrollment_required, teacher_required
 from flask_login import login_user, logout_user, current_user
 import cloudinary.uploader
-from app.models import Task, Course, Submission
+from app.models import Task, Course, Submission, Bill, Enrollment
 
 
 @app.route("/")
@@ -425,11 +425,47 @@ def statistics_page():
     return render_template("statistics.html")
 
 
-@app.route("/invoices")
+@app.route("/cashier/invoices")
 @my_login_required
 def invoices_page():
-    return render_template("invoices.html")
+    invoices = dao.load_bills()
+    return render_template("invoices.html",invoices=invoices)
 
+
+@app.route('/cashier/invoices/create', methods=['GET', 'POST'])
+@my_login_required
+def create_bill():
+    if request.method == 'POST':
+        enrollment_id = request.form.get('enrollment_id')
+        bill_name = request.form.get('name')  # Mã hóa đơn (lưu vào cột name của Base)
+        status_on = request.form.get('status')  # Checkbox
+
+        # Kiểm tra xem Enrollment này đã có Bill chưa (tránh trùng lặp)
+        existing_bill = Bill.query.filter_by(id_enroll=enrollment_id).first()
+        if existing_bill:
+            flash('Đăng ký này đã có hóa đơn!', 'warning')
+            return redirect("/cashier/invoices/create")
+
+
+        new_bill = Bill(
+            name=bill_name,  # Kế thừa từ Base
+            id_enroll=enrollment_id,  # FK Enrollment
+            id_cashier=current_user.id,  # FK User (người đang login)
+            status=True if status_on else False
+        )
+
+        try:
+            db.session.add(new_bill)
+            db.session.commit()
+            flash('Lập hóa đơn thành công!', 'success')
+            return redirect("/cashier/invoices")  # Redirect về trang danh sách
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Lỗi hệ thống: {str(e)}', 'danger')
+
+    unpaid_enrollments = Enrollment.query.filter(~Enrollment.bill.any()).all()
+
+    return render_template('invoices-create.html', unpaid_enrollments=unpaid_enrollments)
 
 @app.route("/teacher/assignments/create", methods=["GET", "POST"])
 @my_login_required
