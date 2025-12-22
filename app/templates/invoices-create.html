@@ -1,0 +1,126 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4">
+
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <h4 class="fw-bold" style="color:#3a3274">
+                        <i class="bi bi-receipt-cutoff me-2"></i> Lập Hóa Đơn Thu Học Phí
+                    </h4>
+                    <p class="text-muted small">Hệ thống tự động hiển thị học phí dựa trên khóa học.</p>
+                </div>
+
+                <div class="card-body p-4">
+                    <form action="{{ url_for('create_bill') }}" method="POST">
+
+                        <div class="mb-4">
+                            <label for="enrollment_id" class="form-label fw-semibold">
+                                Chọn học viên cần thanh toán <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-lg bg-light border-0"
+                                    id="enrollment_id"
+                                    name="enrollment_id"
+                                    required
+                                    onchange="updateBillInfo()">
+                                <option value="" selected disabled>-- Tìm kiếm đăng ký chưa thanh toán --</option>
+
+                                {% for item in unpaid_enrollments %}
+                                    <option value="{{ item.id }}"
+                                            data-course="{{ item.course.name }}"
+                                            data-fee="{{ item.course.fee }}">
+                                        {{ item.user.name }} - {{ item.course.name }} (SĐT: {{ item.user.phone }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% if not unpaid_enrollments %}
+                                <div class="form-text text-success">
+                                    <i class="bi bi-check-circle"></i> Tất cả các đăng ký đã được thanh toán.
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="p-3 mb-4 rounded-3" style="background-color: #f8f9fa;">
+                            <h6 class="text-uppercase text-muted fw-bold small">Chi tiết thanh toán</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Khóa học:</p>
+                                    <p class="fw-bold" id="display_course">---</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1 text-muted">Học phí niêm yết:</p>
+                                    <h5 class="fw-bold text-primary" id="display_fee">0₫</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="bill_name" class="form-label fw-semibold">Mã hóa đơn <span class="text-danger">*</span></label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="bill_name"
+                                       name="name"
+                                       placeholder="VD: INV-{{ range(1000, 9999) | random }}"
+                                       required>
+                            </div>
+
+                            <div class="col-md-6 mb-3 d-flex align-items-center">
+                                <div class="form-check form-switch mt-4">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="status" name="status" checked>
+                                    <label class="form-check-label fw-semibold" for="status">Xác nhận đã thu tiền</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info d-flex align-items-center small" role="alert">
+                            <i class="bi bi-person-badge me-2"></i>
+                            <div>
+                                Người lập phiếu: <strong>{{ current_user.name }}</strong> (ID: {{ current_user.id }})
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end border-top pt-3">
+                            <button type="button" class="btn btn-light me-md-2 fw-semibold" onclick="window.history.back()">Quay lại</button>
+                            <button type="submit" class="btn text-white fw-bold px-5" style="background-color: #3a3274;">
+                                <i class="bi bi-save me-1"></i> Lưu Hóa Đơn
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateBillInfo() {
+        const select = document.getElementById('enrollment_id');
+        const selectedOption = select.options[select.selectedIndex];
+
+        // Lấy data từ option
+        const courseName = selectedOption.getAttribute('data-course');
+        const fee = parseFloat(selectedOption.getAttribute('data-fee'));
+
+        // Format tiền VND
+        const formattedFee = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(fee);
+
+        // Hiển thị ra giao diện
+        if (courseName) {
+            document.getElementById('display_course').innerText = courseName;
+            document.getElementById('display_fee').innerText = formattedFee;
+        } else {
+            document.getElementById('display_course').innerText = "---";
+            document.getElementById('display_fee').innerText = "0₫";
+        }
+    }
+</script>
+
+{% endblock %}

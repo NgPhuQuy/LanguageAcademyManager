@@ -51,6 +51,8 @@ class Role(db.Model):
     name = Column(String(255), unique=True)
     description = Column(String(255))
     user_role = relationship('UserRole', backref='role', lazy=True)
+    def __str__(self):
+        return self.name
 
 
 class UserRole(db.Model):
@@ -110,6 +112,7 @@ class Enrollment(db.Model):
     day_assignment = Column(DateTime, default=datetime.now)
     scores = relationship('Score', backref='enrollment', lazy=True)
     attendance = relationship("Attendance", backref='enrollment', lazy=True)
+    bill = relationship("Bill", backref="enrollment", lazy=True)
 
 
 class Score(Base):
@@ -127,7 +130,9 @@ class Attendance(db.Model):
 
 
 class Bill(Base):
-    id_cashier = Column(Integer, ForeignKey(User.id), nullable=False)
+    enrollment_id = Column(Integer, ForeignKey(Enrollment.id))
+    status = Column(Boolean, default=False)
+    cashier_id = Column(Integer, ForeignKey(User.id), nullable=False, default=2)
 
 
 class Notification(Base):
